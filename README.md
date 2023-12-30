@@ -27,3 +27,15 @@ In this file, the following services have been defined:
 
 Please review the tags of the used images and set them to the same as you're running in production.
 
+### How to Run the Application
+
+This application is containerized using Docker and orchestrated with Docker Compose. To run the application, follow these steps:
+
+1. Ensure Docker and Docker Compose are installed on your machine.
+2. Navigate to the project directory that contains the `docker-compose.yaml` file.
+3. Run the command to start the application
+    ```bash
+   docker-compose up -d
+   ```
+
+Please note that the application will start on the default port 8080.
