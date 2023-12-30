@@ -1,0 +1,34 @@
+services:
+  backend:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - '.:/app'
+    depends_on:
+      - mysql
+    networks:
+      - spring-boot
+
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_DATABASE: 'samoonpride'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'mysql:/var/lib/mysql'
+    networks:
+      - spring-boot
+
+volumes:
+    mysql:
+      driver: local
+
+networks:
+  spring-boot:
+    driver: bridge
