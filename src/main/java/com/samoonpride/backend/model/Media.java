@@ -1,45 +1,39 @@
 package com.samoonpride.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
+@Table
 @Data
-@AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id"}))
+@RequiredArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class LineUser {
-
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "media_type", discriminatorType = DiscriminatorType.STRING)
+public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NonNull
-    private String userId;
-
-    @NonNull
-    private String displayName;
-
-    @OneToMany(mappedBy = "lineUser")
-    private Set<Report> reports = new HashSet<>();
-
-    @OneToMany(mappedBy = "lineUser")
-    private Set<Subscribe> subscribes = new HashSet<>();
+    private String messageId;
 
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "report_id")
+    private Report report;
 }

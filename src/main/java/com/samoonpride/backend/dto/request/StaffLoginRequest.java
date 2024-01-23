@@ -1,11 +1,11 @@
-package com.samoonpride.backend.dto;
+package com.samoonpride.backend.dto.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 @AllArgsConstructor
-@Getter
-public class StaffLoginDto {
+@Data
+public class StaffLoginRequest {
     private String username;
     private String password;
 }

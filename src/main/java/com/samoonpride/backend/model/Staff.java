@@ -5,6 +5,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -14,6 +21,7 @@ import lombok.*;
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "username")
 })
+@EntityListeners(AuditingEntityListener.class)
 public class Staff {
 
     @Id
@@ -34,5 +42,14 @@ public class Staff {
     @NonNull
     @Enumerated(EnumType.STRING)
     private StaffEnum role;
+
+    @OneToMany(mappedBy = "staff")
+    private Set<Report> reports = new HashSet<>();
+
+    @CreatedDate
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 
 }
