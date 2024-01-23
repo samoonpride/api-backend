@@ -1,9 +1,8 @@
 package com.samoonpride.backend.model;
 
-import com.samoonpride.backend.enums.StaffEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,41 +14,32 @@ import java.util.Set;
 
 @Entity
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email"),
-        @UniqueConstraint(columnNames = "username")
-})
+@NoArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id"}))
 @EntityListeners(AuditingEntityListener.class)
-public class Staff {
+public class LineUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NonNull
-    @Email(message = "Email should be valid")
-    private String email;
+    private String userId;
 
     @NonNull
-    private String username;
+    private String displayName;
 
-    @NonNull
-    @Size(min = 8, message = "Password should be at least 8 characters")
-    private String password;
-
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private StaffEnum role;
-
-    @OneToMany(mappedBy = "staff")
+    @OneToMany(mappedBy = "lineUser")
     private Set<Report> reports = new HashSet<>();
+
+    @OneToMany(mappedBy = "lineUser")
+    private Set<Subscribe> subscribes = new HashSet<>();
 
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
-
 }

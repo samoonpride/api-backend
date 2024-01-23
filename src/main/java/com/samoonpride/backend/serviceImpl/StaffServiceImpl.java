@@ -1,6 +1,6 @@
 package com.samoonpride.backend.serviceImpl;
 
-import com.samoonpride.backend.dto.StaffLoginDto;
+import com.samoonpride.backend.dto.request.StaffLoginRequest;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;
@@ -21,10 +21,14 @@ public class StaffServiceImpl implements StaffService {
         staffRepository.save(staff);
     }
 
-    public boolean login(StaffLoginDto staffLoginDto) {
+    public Staff getStaffByEmail(String email) {
+        return staffRepository.findByEmail(email);
+    }
+
+    public boolean login(StaffLoginRequest staffLoginRequestDto) {
         return staffRepository.existsByUsernameAndPassword(
-                staffLoginDto.getUsername(),
-                staffLoginDto.getPassword()
+                staffLoginRequestDto.getUsername(),
+                staffLoginRequestDto.getPassword()
         );
     }
 }
