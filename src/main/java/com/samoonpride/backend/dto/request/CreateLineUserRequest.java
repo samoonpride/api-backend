@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateLineUserRequest {
-    @JsonProperty("user_id")
     private String userId;
-    @JsonProperty("display_name")
     private String displayName;
 }
