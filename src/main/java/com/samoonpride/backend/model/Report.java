@@ -35,7 +35,7 @@ public class Report {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private ReportStatus status = ReportStatus.PENDING;
+    private ReportStatus status = ReportStatus.IN_CONSIDERATION;
 
     @ManyToOne
     @JoinColumn(name = "staff_id")

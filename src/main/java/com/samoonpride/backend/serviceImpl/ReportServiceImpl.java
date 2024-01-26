@@ -1,8 +1,8 @@
 package com.samoonpride.backend.serviceImpl;
 
-import com.samoonpride.backend.dto.MediaDto;
 import com.samoonpride.backend.dto.UserDto;
 import com.samoonpride.backend.dto.request.CreateReportRequest;
+import com.samoonpride.backend.dto.request.UpdateReportStatusRequest;
 import com.samoonpride.backend.enums.UserEnum;
 import com.samoonpride.backend.model.Report;
 import com.samoonpride.backend.repository.ReportRepository;
@@ -41,5 +41,11 @@ public class ReportServiceImpl implements ReportService {
         } else {
             report.setStaff(staffService.getStaffByEmail(userDto.getKey()));
         }
+    }
+
+    public void updateReportStatus(UpdateReportStatusRequest updateReportStatusRequest) {
+        Report report = reportRepository.findById(updateReportStatusRequest.getReportId());
+        report.setStatus(updateReportStatusRequest.getStatus());
+        reportRepository.save(report);
     }
 }

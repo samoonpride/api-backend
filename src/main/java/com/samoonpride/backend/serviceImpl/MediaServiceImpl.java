@@ -9,11 +9,13 @@ import com.samoonpride.backend.model.Video;
 import com.samoonpride.backend.repository.MediaRepository;
 import com.samoonpride.backend.service.MediaService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class MediaServiceImpl implements MediaService {
@@ -24,10 +26,10 @@ public class MediaServiceImpl implements MediaService {
         for (MediaDto dto : mediaDto) {
             Media media;
             if (dto.getType() == MediaEnum.IMAGE) {
-                System.out.printf("Multimedia: %s\n", dto.getMessageId());
+                log.info("Saving image");
                 media = modelMapper.map(dto, Image.class);
             } else {
-                System.out.printf("Multimedia: %s\n", dto.getMessageId());
+                log.info("Saving video");
                 media = modelMapper.map(dto, Video.class);
             }
             media.setReport(report);

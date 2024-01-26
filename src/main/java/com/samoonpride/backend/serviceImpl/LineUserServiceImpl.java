@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 @AllArgsConstructor
 public class LineUserServiceImpl implements LineUserService {

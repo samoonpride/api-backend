@@ -8,10 +8,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @DiscriminatorValue("video")
 public class Video extends Media {
-    @JsonProperty("path")
-    private String videoPath;
 }

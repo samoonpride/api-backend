@@ -1,9 +1,7 @@
 package com.samoonpride.backend.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.samoonpride.backend.dto.MediaDto;
 import com.samoonpride.backend.dto.UserDto;
-import com.samoonpride.backend.enums.UserEnum;
 import lombok.*;
 
 import java.util.List;
