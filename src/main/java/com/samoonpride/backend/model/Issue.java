@@ -1,8 +1,6 @@
 package com.samoonpride.backend.model;
 
-import com.samoonpride.backend.dto.UserDto;
-import com.samoonpride.backend.enums.ReportStatus;
-import com.samoonpride.backend.enums.UserEnum;
+import com.samoonpride.backend.enums.IssueStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,10 +16,11 @@ import java.util.Set;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Report {
+public class Issue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -29,13 +28,16 @@ public class Report {
     @NonNull
     private String title;
 
+    @NonNull
+    private String thumbnailPath;
+
     private float latitude;
 
     private float longitude;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private ReportStatus status = ReportStatus.IN_CONSIDERATION;
+    private IssueStatus status = IssueStatus.IN_CONSIDERATION;
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
@@ -45,10 +47,10 @@ public class Report {
     @JoinColumn(name = "line_user_id")
     private LineUser lineUser;
 
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "issue")
     private Set<Subscribe> subscribes = new HashSet<>();
 
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "issue")
     private Set<Media> media = new HashSet<>();
 
     @CreatedDate

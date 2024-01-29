@@ -4,7 +4,7 @@ import com.samoonpride.backend.dto.MediaDto;
 import com.samoonpride.backend.enums.MediaEnum;
 import com.samoonpride.backend.model.Image;
 import com.samoonpride.backend.model.Media;
-import com.samoonpride.backend.model.Report;
+import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.model.Video;
 import com.samoonpride.backend.repository.MediaRepository;
 import com.samoonpride.backend.service.MediaService;
@@ -22,7 +22,7 @@ public class MediaServiceImpl implements MediaService {
     private final MediaRepository mediaRepository;
     private final ModelMapper modelMapper;
     @Override
-    public void createMultimedia(Report report, List<MediaDto> mediaDto) {
+    public void createMultimedia(Issue issue, List<MediaDto> mediaDto) {
         for (MediaDto dto : mediaDto) {
             Media media;
             if (dto.getType() == MediaEnum.IMAGE) {
@@ -32,7 +32,7 @@ public class MediaServiceImpl implements MediaService {
                 log.info("Saving video");
                 media = modelMapper.map(dto, Video.class);
             }
-            media.setReport(report);
+            media.setIssue(issue);
             mediaRepository.save(media);
         }
     }

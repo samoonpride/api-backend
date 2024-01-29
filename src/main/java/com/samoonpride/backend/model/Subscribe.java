@@ -27,8 +27,8 @@ public class Subscribe {
     private LineUser lineUser;
 
     @ManyToOne
-    @JoinColumn(name = "report_id")
-    private Report report;
+    @JoinColumn(name = "issue_id")
+    private Issue issue;
 
     @CreatedDate
     private LocalDateTime createdDate;

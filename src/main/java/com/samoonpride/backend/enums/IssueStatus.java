@@ -1,6 +1,6 @@
 package com.samoonpride.backend.enums;
 
-public enum ReportStatus {
+public enum IssueStatus {
     // รอพิจารณา
     IN_CONSIDERATION,
     // กำลังดำเนินการ

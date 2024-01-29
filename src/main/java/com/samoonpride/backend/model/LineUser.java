@@ -32,7 +32,7 @@ public class LineUser {
     private String displayName;
 
     @OneToMany(mappedBy = "lineUser")
-    private Set<Report> reports = new HashSet<>();
+    private Set<Issue> issues = new HashSet<>();
 
     @OneToMany(mappedBy = "lineUser")
     private Set<Subscribe> subscribes = new HashSet<>();

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateReportRequest {
+public class CreateIssueRequest {
     private UserDto user;
     private String title;
     private float latitude;

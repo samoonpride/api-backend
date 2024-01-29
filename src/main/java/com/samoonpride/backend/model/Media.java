@@ -34,6 +34,6 @@ public class Media {
     private LocalDateTime lastModifiedDate;
 
     @ManyToOne
-    @JoinColumn(name = "report_id")
-    private Report report;
+    @JoinColumn(name = "issue_id")
+    private Issue issue;
 }
