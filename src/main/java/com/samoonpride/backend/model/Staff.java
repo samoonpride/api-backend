@@ -44,7 +44,7 @@ public class Staff {
     private StaffEnum role;
 
     @OneToMany(mappedBy = "staff")
-    private Set<Report> reports = new HashSet<>();
+    private Set<Issue> issues = new HashSet<>();
 
     @CreatedDate
     private LocalDateTime createdDate;
