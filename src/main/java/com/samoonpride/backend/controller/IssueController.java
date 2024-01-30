@@ -2,7 +2,7 @@ package com.samoonpride.backend.controller;
 
 import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
-import com.samoonpride.backend.dto.request.GetLatestIssueRequest;
+import com.samoonpride.backend.dto.request.GetIssueByLineUserRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.serviceImpl.IssueServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +32,30 @@ public class IssueController {
     }
 
     // get latest 10 issues
-    @GetMapping("/get/latest")
+    @GetMapping("/line-user/get/latest")
     @ResponseBody
-    public ResponseEntity<List<IssueDto>> getLatestIssues(@RequestBody GetLatestIssueRequest getLatestIssueRequest) {
+    public ResponseEntity<List<IssueDto>> getLatestIssues(@RequestBody GetIssueByLineUserRequest getIssueByLineUserRequest) {
         return ResponseEntity.ok().body(
-                issueService.getLatestIssuesByLineUserAndStatusIn(
-                        getLatestIssueRequest.getUserId(),
-                        getLatestIssueRequest.getStatus()
+                issueService.getLatestTenIssuesByLineUserAndStatus(
+                        getIssueByLineUserRequest.getUserId(),
+                        getIssueByLineUserRequest.getStatus()
                 )
         );
 
+
+
+
+
+    }
+
+    @GetMapping("/line-user/get/all")
+    @ResponseBody
+    public ResponseEntity<List<IssueDto>> getAllIssues(@RequestBody GetIssueByLineUserRequest getIssueByLineUserRequest) {
+        return ResponseEntity.ok().body(
+                issueService.getAllIssuesByLineUserAndStatus(
+                        getIssueByLineUserRequest.getUserId(),
+                        getIssueByLineUserRequest.getStatus()
+                )
+        );
     }
 }

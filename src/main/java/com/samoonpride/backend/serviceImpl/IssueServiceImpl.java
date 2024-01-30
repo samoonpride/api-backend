@@ -6,7 +6,6 @@ import com.samoonpride.backend.dto.request.CreateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.enums.UserEnum;
-import com.samoonpride.backend.model.LineUser;
 import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.repository.IssueRepository;
 import com.samoonpride.backend.service.IssueService;
@@ -58,10 +57,17 @@ public class IssueServiceImpl implements IssueService {
     }
 
     // get latest 10 issues
-    public List<IssueDto> getLatestIssuesByLineUserAndStatusIn(String userId, List<IssueStatus> status) {
+    public List<IssueDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status) {
         log.info("get latest 10 issues");
-        LineUser lineUser = lineUserService.findByUserId(userId);
-        List<Issue> issueList = issueRepository.findFirst10ByLineUserAndStatusInOrderByCreatedDateDesc(lineUser, status);
+        List<Issue> issueList = issueRepository.findFirst10ByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(userId, status);
+        return issueList.stream()
+                         .map(issue -> modelMapper.map(issue, IssueDto.class))
+                         .collect(Collectors.toList());
+    }
+
+    public List<IssueDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status) {
+        log.info("get latest 10 issues");
+        List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(email, status);
         return issueList.stream()
                          .map(issue -> modelMapper.map(issue, IssueDto.class))
                          .collect(Collectors.toList());
