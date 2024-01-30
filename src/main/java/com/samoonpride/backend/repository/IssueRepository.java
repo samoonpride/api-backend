@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface IssueRepository extends CrudRepository<Issue, Long> {
     Issue findById(int issueId);
-    List<Issue> findFirst10ByLineUserAndStatusInOrderByCreatedDateDesc(LineUser lineUser, List<IssueStatus> status);
+    List<Issue> findFirst10ByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
+    List<Issue> findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
 }
