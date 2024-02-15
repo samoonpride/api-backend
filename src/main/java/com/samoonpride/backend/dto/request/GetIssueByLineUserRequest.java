@@ -7,6 +7,5 @@ import java.util.List;
 
 @Data
 public class GetIssueByLineUserRequest {
-    private String userId;
     private List<IssueStatus> status = List.of(IssueStatus.IN_CONSIDERATION, IssueStatus.IN_PROGRESS);
 }

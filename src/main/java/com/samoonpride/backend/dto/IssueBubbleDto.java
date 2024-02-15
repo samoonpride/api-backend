@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IssueDto {
+public class IssueBubbleDto {
     private String title;
     private String thumbnailPath;
     private IssueStatus status;

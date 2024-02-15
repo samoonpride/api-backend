@@ -1,6 +1,7 @@
 # Getting Started
 
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
@@ -11,6 +12,7 @@ For further reference, please consider the following sections:
 * [Docker Compose Support](https://docs.spring.io/spring-boot/docs/3.2.1/reference/htmlsingle/index.html#features.docker-compose)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
@@ -20,6 +22,7 @@ The following guides illustrate how to use some features concretely:
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 
 ### Docker Compose support
+
 This project contains a Docker Compose file named `compose.yaml`.
 In this file, the following services have been defined:
 
@@ -29,7 +32,8 @@ Please review the tags of the used images and set them to the same as you're run
 
 ### How to Run the Application
 
-This application is containerized using Docker and orchestrated with Docker Compose. To run the application, follow these steps:
+This application is containerized using Docker and orchestrated with Docker Compose. To run the application, follow
+these steps:
 
 1. Ensure Docker and Docker Compose are installed on your machine.
 2. Navigate to the project directory that contains the `docker-compose.yaml` file.

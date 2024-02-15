@@ -7,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class UpdateIssueStatusRequest {
-    private int issueId;
     private IssueStatus status;
 }

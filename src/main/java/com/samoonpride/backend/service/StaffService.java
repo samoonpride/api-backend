@@ -5,5 +5,6 @@ import com.samoonpride.backend.model.Staff;
 
 public interface StaffService {
     void createStaff(Staff staff);
+
     boolean login(StaffLoginRequest staffLoginRequestDto);
 }

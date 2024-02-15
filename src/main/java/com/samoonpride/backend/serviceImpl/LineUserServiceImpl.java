@@ -2,7 +2,6 @@ package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.dto.request.CreateLineUserRequest;
 import com.samoonpride.backend.model.LineUser;
-import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.repository.LineUserRepository;
 import com.samoonpride.backend.service.LineUserService;
 import lombok.AllArgsConstructor;

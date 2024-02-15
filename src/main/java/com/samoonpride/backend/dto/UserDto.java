@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-        private UserEnum type;
-//        if type is "line", then key is line user id
-//        if type is "staff", then key is staff email
-        private String key;
+    private UserEnum type;
+    // if type is "line", then key is line user id
+    // if type is "staff", then key is staff email
+    private String userId;
 }

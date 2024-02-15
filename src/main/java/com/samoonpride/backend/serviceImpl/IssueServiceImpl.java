@@ -1,6 +1,6 @@
 package com.samoonpride.backend.serviceImpl;
 
-import com.samoonpride.backend.dto.IssueDto;
+import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.UserDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
@@ -28,48 +28,60 @@ public class IssueServiceImpl implements IssueService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Issue createIssue(CreateIssueRequest createIssueRequest) {
+    public void createIssue(CreateIssueRequest createIssueRequest) {
         Issue issue = new Issue();
         // set user
         this.setIssueUser(issue, createIssueRequest.getUser());
         // set another field
         issue.setTitle(createIssueRequest.getTitle());
+        issue.setThumbnailPath(createIssueRequest.getThumbnailPath());
         issue.setLatitude(createIssueRequest.getLatitude());
         issue.setLongitude(createIssueRequest.getLongitude());
         issueRepository.save(issue);
         // set media
         multimediaService.createMultimedia(issue, createIssueRequest.getMedia());
-        return issue;
     }
 
-    private void setIssueUser(Issue issue, UserDto userDto) {
-        if (userDto.getType() == UserEnum.LINE) {
-            issue.setLineUser(lineUserService.findByUserId(userDto.getKey()));
-        } else {
-            issue.setStaff(staffService.findByEmail(userDto.getKey()));
-        }
-    }
-
-    public void updateIssueStatus(UpdateIssueStatusRequest updateIssueStatusRequest) {
-        Issue issue = issueRepository.findById(updateIssueStatusRequest.getIssueId());
+    @Override
+    public void updateIssueStatus(int issueId, UpdateIssueStatusRequest updateIssueStatusRequest) {
+        Issue issue = issueRepository.findById(issueId);
         issue.setStatus(updateIssueStatusRequest.getStatus());
         issueRepository.save(issue);
     }
 
+    @Override
+    public void reopenIssue(int issueId) {
+        Issue issue = issueRepository.findById(issueId);
+        if (issue.getStatus() == IssueStatus.COMPLETED) {
+            issue.setStatus(IssueStatus.IN_CONSIDERATION);
+            issueRepository.save(issue);
+        }
+        throw new IllegalArgumentException("Issue is not status completed");
+    }
+
     // get latest 10 issues
-    public List<IssueDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status) {
+    public List<IssueBubbleDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status) {
         log.info("get latest 10 issues");
         List<Issue> issueList = issueRepository.findFirst10ByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(userId, status);
         return issueList.stream()
-                         .map(issue -> modelMapper.map(issue, IssueDto.class))
-                         .collect(Collectors.toList());
+                .map(issue -> modelMapper.map(issue, IssueBubbleDto.class))
+                .collect(Collectors.toList());
     }
 
-    public List<IssueDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status) {
+    public List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status) {
         log.info("get latest 10 issues");
         List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(email, status);
         return issueList.stream()
-                         .map(issue -> modelMapper.map(issue, IssueDto.class))
-                         .collect(Collectors.toList());
+                .map(issue -> modelMapper.map(issue, IssueBubbleDto.class))
+                .collect(Collectors.toList());
     }
+
+    private void setIssueUser(Issue issue, UserDto userDto) {
+        if (userDto.getType() == UserEnum.LINE) {
+            issue.setLineUser(lineUserService.findByUserId(userDto.getUserId()));
+        } else {
+            issue.setStaff(staffService.findByEmail(userDto.getUserId()));
+        }
+    }
+
 }

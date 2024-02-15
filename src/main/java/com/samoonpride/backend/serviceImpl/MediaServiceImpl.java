@@ -3,8 +3,8 @@ package com.samoonpride.backend.serviceImpl;
 import com.samoonpride.backend.dto.MediaDto;
 import com.samoonpride.backend.enums.MediaEnum;
 import com.samoonpride.backend.model.Image;
-import com.samoonpride.backend.model.Media;
 import com.samoonpride.backend.model.Issue;
+import com.samoonpride.backend.model.Media;
 import com.samoonpride.backend.model.Video;
 import com.samoonpride.backend.repository.MediaRepository;
 import com.samoonpride.backend.service.MediaService;
@@ -21,6 +21,7 @@ import java.util.List;
 public class MediaServiceImpl implements MediaService {
     private final MediaRepository mediaRepository;
     private final ModelMapper modelMapper;
+
     @Override
     public void createMultimedia(Issue issue, List<MediaDto> mediaDto) {
         for (MediaDto dto : mediaDto) {

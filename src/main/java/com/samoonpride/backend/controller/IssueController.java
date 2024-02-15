@@ -1,9 +1,9 @@
 package com.samoonpride.backend.controller;
 
-import com.samoonpride.backend.dto.IssueDto;
+import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
-import com.samoonpride.backend.dto.request.GetIssueByLineUserRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
+import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.serviceImpl.IssueServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,37 +25,39 @@ public class IssueController {
     }
 
     // update status of issue
-    @PostMapping("/update/status")
+    @PatchMapping("/update/{issueId}/status")
     @ResponseStatus(HttpStatus.OK)
-    public void updateIssue(@RequestBody UpdateIssueStatusRequest updateIssueStatusRequest) {
-        issueService.updateIssueStatus(updateIssueStatusRequest);
+    public void updateIssue(@PathVariable int issueId, @RequestBody UpdateIssueStatusRequest updateIssueStatusRequest) {
+        issueService.updateIssueStatus(issueId, updateIssueStatusRequest);
+    }
+
+    // reopen issue
+    @PatchMapping("/reopen/{issueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void reopenIssue(@PathVariable int issueId) {
+        issueService.reopenIssue(issueId);
     }
 
     // get latest 10 issues
-    @GetMapping("/line-user/get/latest")
+    @GetMapping("/line-user/get/{userId}/latest")
     @ResponseBody
-    public ResponseEntity<List<IssueDto>> getLatestIssues(@RequestBody GetIssueByLineUserRequest getIssueByLineUserRequest) {
-        return ResponseEntity.ok().body(
-                issueService.getLatestTenIssuesByLineUserAndStatus(
-                        getIssueByLineUserRequest.getUserId(),
-                        getIssueByLineUserRequest.getStatus()
-                )
-        );
-
-
-
-
-
+    public ResponseEntity<List<IssueBubbleDto>> getLatestIssues(
+            @PathVariable String userId,
+            @RequestParam(required = false, defaultValue = "IN_CONSIDERATION,IN_PROGRESS") List<IssueStatus> status
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(issueService.getLatestTenIssuesByLineUserAndStatus(userId, status));
     }
 
-    @GetMapping("/line-user/get/all")
+    @GetMapping("/line-user/get/{userId}/all")
     @ResponseBody
-    public ResponseEntity<List<IssueDto>> getAllIssues(@RequestBody GetIssueByLineUserRequest getIssueByLineUserRequest) {
-        return ResponseEntity.ok().body(
-                issueService.getAllIssuesByLineUserAndStatus(
-                        getIssueByLineUserRequest.getUserId(),
-                        getIssueByLineUserRequest.getStatus()
-                )
-        );
+    public ResponseEntity<List<IssueBubbleDto>> getAllIssues(
+            @PathVariable String userId,
+            @RequestParam(required = false, defaultValue = "IN_CONSIDERATION,IN_PROGRESS") List<IssueStatus> status
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(issueService.getAllIssuesByLineUserAndStatus(userId, status));
     }
 }
