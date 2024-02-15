@@ -1,7 +1,6 @@
 package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.dto.request.StaffLoginRequest;
-import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;

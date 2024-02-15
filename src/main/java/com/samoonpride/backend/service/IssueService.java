@@ -6,5 +6,6 @@ import com.samoonpride.backend.model.Issue;
 
 public interface IssueService {
     Issue createIssue(CreateIssueRequest createIssueRequest);
+
     void updateIssueStatus(UpdateIssueStatusRequest updateIssueStatusRequest);
 }
