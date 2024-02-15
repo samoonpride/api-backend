@@ -28,7 +28,7 @@ public class IssueServiceImpl implements IssueService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Issue createIssue(CreateIssueRequest createIssueRequest) {
+    public void createIssue(CreateIssueRequest createIssueRequest) {
         Issue issue = new Issue();
         // set user
         this.setIssueUser(issue, createIssueRequest.getUser());
@@ -40,21 +40,23 @@ public class IssueServiceImpl implements IssueService {
         issueRepository.save(issue);
         // set media
         multimediaService.createMultimedia(issue, createIssueRequest.getMedia());
-        return issue;
     }
 
-    private void setIssueUser(Issue issue, UserDto userDto) {
-        if (userDto.getType() == UserEnum.LINE) {
-            issue.setLineUser(lineUserService.findByUserId(userDto.getUserId()));
-        } else {
-            issue.setStaff(staffService.findByEmail(userDto.getUserId()));
-        }
-    }
-
-    public void updateIssueStatus(UpdateIssueStatusRequest updateIssueStatusRequest) {
-        Issue issue = issueRepository.findById(updateIssueStatusRequest.getIssueId());
+    @Override
+    public void updateIssueStatus(int issueId, UpdateIssueStatusRequest updateIssueStatusRequest) {
+        Issue issue = issueRepository.findById(issueId);
         issue.setStatus(updateIssueStatusRequest.getStatus());
         issueRepository.save(issue);
+    }
+
+    @Override
+    public void reopenIssue(int issueId) {
+        Issue issue = issueRepository.findById(issueId);
+        if (issue.getStatus() == IssueStatus.COMPLETED) {
+            issue.setStatus(IssueStatus.IN_CONSIDERATION);
+            issueRepository.save(issue);
+        }
+        throw new IllegalArgumentException("Issue is not status completed");
     }
 
     // get latest 10 issues
@@ -73,4 +75,13 @@ public class IssueServiceImpl implements IssueService {
                 .map(issue -> modelMapper.map(issue, IssueBubbleDto.class))
                 .collect(Collectors.toList());
     }
+
+    private void setIssueUser(Issue issue, UserDto userDto) {
+        if (userDto.getType() == UserEnum.LINE) {
+            issue.setLineUser(lineUserService.findByUserId(userDto.getUserId()));
+        } else {
+            issue.setStaff(staffService.findByEmail(userDto.getUserId()));
+        }
+    }
+
 }

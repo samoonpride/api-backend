@@ -2,7 +2,6 @@ package com.samoonpride.backend.controller;
 
 import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
-import com.samoonpride.backend.dto.request.GetIssueByLineUserRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.serviceImpl.IssueServiceImpl;
@@ -26,10 +25,17 @@ public class IssueController {
     }
 
     // update status of issue
-    @PostMapping("/update/status")
+    @PatchMapping("/update/{issueId}/status")
     @ResponseStatus(HttpStatus.OK)
-    public void updateIssue(@RequestBody UpdateIssueStatusRequest updateIssueStatusRequest) {
-        issueService.updateIssueStatus(updateIssueStatusRequest);
+    public void updateIssue(@PathVariable int issueId, @RequestBody UpdateIssueStatusRequest updateIssueStatusRequest) {
+        issueService.updateIssueStatus(issueId, updateIssueStatusRequest);
+    }
+
+    // reopen issue
+    @PatchMapping("/reopen/{issueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void reopenIssue(@PathVariable int issueId) {
+        issueService.reopenIssue(issueId);
     }
 
     // get latest 10 issues
