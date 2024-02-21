@@ -1,6 +1,7 @@
 package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.dto.IssueBubbleDto;
+import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.UserDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
@@ -60,6 +61,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     // get latest 10 issues
+    @Override
     public List<IssueBubbleDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status) {
         log.info("get latest 10 issues");
         List<Issue> issueList = issueRepository.findFirst10ByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(userId, status);
@@ -68,11 +70,21 @@ public class IssueServiceImpl implements IssueService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status) {
         log.info("get latest 10 issues");
         List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(email, status);
         return issueList.stream()
                 .map(issue -> modelMapper.map(issue, IssueBubbleDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueDto> getAllIssues() {
+        log.info("get all issues");
+        List<Issue> issueList = (List<Issue>) issueRepository.findAll();
+        return issueList.stream()
+                .map(issue -> modelMapper.map(issue, IssueDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -83,5 +95,4 @@ public class IssueServiceImpl implements IssueService {
             issue.setStaff(staffService.findByEmail(userDto.getUserId()));
         }
     }
-
 }
