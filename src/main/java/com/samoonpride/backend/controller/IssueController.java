@@ -1,6 +1,7 @@
 package com.samoonpride.backend.controller;
 
 import com.samoonpride.backend.dto.IssueBubbleDto;
+import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
@@ -17,6 +18,14 @@ import java.util.List;
 @RequestMapping("/api/issue")
 public class IssueController {
     private final IssueServiceImpl issueService;
+
+    @GetMapping("/get/all")
+    @ResponseBody
+    public ResponseEntity<List<IssueDto>> getAllIssues() {
+        return ResponseEntity
+                .ok()
+                .body(issueService.getAllIssues());
+    }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)

@@ -47,6 +47,10 @@ public class Issue {
     @JoinColumn(name = "line_user_id")
     private LineUser lineUser;
 
+    @ManyToOne
+    @JoinColumn(name = "duplicate_issue_id")
+    private Issue duplicateIssue;
+
     @OneToMany(mappedBy = "issue")
     private Set<Subscribe> subscribes = new HashSet<>();
 
