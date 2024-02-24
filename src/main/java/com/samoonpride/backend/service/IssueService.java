@@ -17,7 +17,7 @@ public interface IssueService {
 
     List<IssueBubbleDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
 
-    List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status);
+    List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
 
     List<IssueDto> getAllIssues();
 }

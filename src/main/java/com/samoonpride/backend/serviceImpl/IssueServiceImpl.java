@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
+
     private final LineUserServiceImpl lineUserService;
     private final MediaServiceImpl multimediaService;
     private final StaffServiceImpl staffService;
@@ -71,9 +72,9 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status) {
+    public List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String userId, List<IssueStatus> status) {
         log.info("get latest 10 issues");
-        List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(email, status);
+        List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(userId, status);
         return issueList.stream()
                 .map(issue -> modelMapper.map(issue, IssueBubbleDto.class))
                 .collect(Collectors.toList());
@@ -92,7 +93,7 @@ public class IssueServiceImpl implements IssueService {
         if (userDto.getType() == UserEnum.LINE) {
             issue.setLineUser(lineUserService.findByUserId(userDto.getUserId()));
         } else {
-            issue.setStaff(staffService.findByEmail(userDto.getUserId()));
+            issue.setStaff(staffService.findStaffByUsername(userDto.getUserId()));
         }
     }
 }

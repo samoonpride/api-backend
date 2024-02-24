@@ -1,11 +1,9 @@
 package com.samoonpride.backend.config;
 
 import com.samoonpride.backend.converter.IssueToIssueDtoConverter;
-import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.MediaDto;
 import com.samoonpride.backend.dto.request.CreateLineUserRequest;
 import com.samoonpride.backend.model.Image;
-import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.model.LineUser;
 import com.samoonpride.backend.model.Video;
 import org.modelmapper.ModelMapper;

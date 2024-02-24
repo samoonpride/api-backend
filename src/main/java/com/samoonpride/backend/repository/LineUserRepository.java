@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LineUserRepository extends CrudRepository<LineUser, Long> {
+public interface LineUserRepository extends CrudRepository<LineUser, Integer> {
     LineUser findByUserId(String userId);
 }

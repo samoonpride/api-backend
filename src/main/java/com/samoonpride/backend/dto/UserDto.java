@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     private UserEnum type;
     // if type is "line", then key is line user id
-    // if type is "staff", then key is staff email
+    // if type is "staff", then key is staff's username
     private String userId;
 }
