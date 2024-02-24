@@ -35,9 +35,12 @@ Please review the tags of the used images and set them to the same as you're run
 This application is containerized using Docker and orchestrated with Docker Compose. To run the application, follow
 these steps:
 
-1. Ensure Docker and Docker Compose are installed on your machine.
-2. Navigate to the project directory that contains the `docker-compose.yaml` file.
-3. Run the command to start the application
+1. Navigate to `src/main/resources`. Make a copy of `application.properties.example` and rename it to `application.properties`. Fill the value of each necessary configurations.
+   - For `spring.datasource.url`, it should be something similar to this pattern: `jdbc:mysql://{host}:{port}/{databaseName}`, e.g. `jdbc:mysql://localhost:3306/samoonpride`.
+   - For `jwt.key`, you have to generate any 256-bit keys and fill it in (you can generate it from any sources such as [this one](https://acte.ltd/utils/randomkeygen)). This is the secret key used for generating JWT tokens and validating JWT signatures. It should be kept as a secret. If one is exposed, generating a new one must be strictly done.
+2. Ensure Docker and Docker Compose are installed on your machine.
+3. Navigate to the project directory that contains the `docker-compose.yaml` file.
+4. Run the command to start the application
     ```bash
    docker-compose up -d
    ```
