@@ -32,7 +32,6 @@ public class StaffServiceImpl implements StaffService {
 
     public LoginDto createStaff(Staff staff) {
         Staff encodedPasswordStaff = new Staff(
-            staff.getEmail(), 
             staff.getUsername(), 
             passwordEncoder.encode(staff.getPassword()), 
             staff.getRole()

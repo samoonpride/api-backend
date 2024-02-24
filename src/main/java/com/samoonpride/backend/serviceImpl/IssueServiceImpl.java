@@ -72,9 +72,9 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String email, List<IssueStatus> status) {
+    public List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String userId, List<IssueStatus> status) {
         log.info("get latest 10 issues");
-        List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(email, status);
+        List<Issue> issueList = issueRepository.findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(userId, status);
         return issueList.stream()
                 .map(issue -> modelMapper.map(issue, IssueBubbleDto.class))
                 .collect(Collectors.toList());

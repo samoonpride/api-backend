@@ -4,12 +4,8 @@ import com.samoonpride.backend.model.Staff;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface StaffRepository extends CrudRepository<Staff, Integer> {
-    Optional<Staff> findByUsernameOrEmail(String username, String email);
-
     Staff findByUsername(String username);
 
     boolean existsByUsernameAndPassword(String username, String password);
