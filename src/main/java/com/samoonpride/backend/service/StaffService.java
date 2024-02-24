@@ -1,10 +1,11 @@
 package com.samoonpride.backend.service;
 
+import com.samoonpride.backend.dto.LoginDto;
 import com.samoonpride.backend.dto.request.StaffLoginRequest;
 import com.samoonpride.backend.model.Staff;
 
 public interface StaffService {
-    void createStaff(Staff staff);
+    LoginDto createStaff(Staff staff);
 
-    boolean login(StaffLoginRequest staffLoginRequestDto);
+    LoginDto login(StaffLoginRequest staffLoginRequestDto);
 }

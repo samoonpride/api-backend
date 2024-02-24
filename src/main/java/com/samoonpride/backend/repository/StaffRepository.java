@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface StaffRepository extends CrudRepository<Staff, Long> {
     Optional<Staff> findByUsernameOrEmail(String username, String email);
 
-    Staff findByEmail(String email);
+    Staff findByUsername(String username);
 
     boolean existsByUsernameAndPassword(String username, String password);
 }
