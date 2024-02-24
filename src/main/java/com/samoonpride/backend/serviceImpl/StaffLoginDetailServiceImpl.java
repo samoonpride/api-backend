@@ -23,7 +23,7 @@ public class StaffLoginDetailServiceImpl implements StaffLoginDetailService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Staff staff = staffRepository.findByUsername(username);
         List<String> roles = new ArrayList<>();
-        roles.add("USER");
+        roles.add(staff.getRole().toString());
         UserDetails userDetails = User.builder()
                                     .username(staff.getUsername())
                                     .password(staff.getPassword())

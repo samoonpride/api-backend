@@ -9,7 +9,6 @@ import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.enums.UserEnum;
 import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.repository.IssueRepository;
-import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,10 +23,10 @@ import java.util.stream.Collectors;
 @Service
 public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
-    private final StaffRepository staffRepository;
 
     private final LineUserServiceImpl lineUserService;
     private final MediaServiceImpl multimediaService;
+    private final StaffServiceImpl staffService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -94,7 +93,7 @@ public class IssueServiceImpl implements IssueService {
         if (userDto.getType() == UserEnum.LINE) {
             issue.setLineUser(lineUserService.findByUserId(userDto.getUserId()));
         } else {
-            issue.setStaff(staffRepository.findByUsername(userDto.getUserId()));
+            issue.setStaff(staffService.findStaffByUsername(userDto.getUserId()));
         }
     }
 }

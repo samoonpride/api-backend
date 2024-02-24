@@ -26,6 +26,10 @@ public class StaffServiceImpl implements StaffService {
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
 
+    public Staff findStaffByUsername(String username) {
+        return staffRepository.findByUsername(username);
+    }
+
     public LoginDto createStaff(Staff staff) {
         Staff encodedPasswordStaff = new Staff(
             staff.getEmail(), 
