@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IssueRepository extends CrudRepository<Issue, Long> {
+public interface IssueRepository extends CrudRepository<Issue, Integer> {
     Issue findById(int issueId);
 
     List<Issue> findFirst10ByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
