@@ -2,6 +2,7 @@ package com.samoonpride.backend.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -12,7 +13,11 @@ public class WebClientConfig {
     private static WebClient webClient;
     private final WebClient.Builder webClientBuilder;
 
-    public void setWebClient() {
-        webClient = webClientBuilder.build();
+    @Bean
+    public WebClient setWebClient() {
+        webClient = webClientBuilder
+                .defaultHeader("Authorization", "Bearer " + LineConfig.getChannelToken())
+                .build();
+        return webClient;
     }
 }

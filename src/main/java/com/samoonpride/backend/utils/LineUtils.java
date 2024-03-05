@@ -11,7 +11,7 @@ public class LineUtils {
 
     // Get image content from the line api
     public static ResponseEntity<byte[]> getMessageContent(String messageId) {
-        URI uri = URI.create("https://api.line.me/v2/bot/message/" + messageId + "/content");
+        URI uri = URI.create("https://api-data.line.me/v2/bot/message/" + messageId + "/content");
         return WebClientConfig.getWebClient().get()
                 .uri(uri)
                 .retrieve()
