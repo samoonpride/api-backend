@@ -2,6 +2,7 @@ package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.dto.LoginDto;
+import com.samoonpride.backend.dto.request.ChangePasswordRequest;
 import com.samoonpride.backend.dto.request.StaffLoginRequest;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
@@ -50,13 +51,55 @@ public class StaffServiceImpl implements StaffService {
             );
             Staff staff = staffRepository.findByUsername(authentication.getName());
             String token = jwtUtil.createToken(staff);
-            LoginDto loginDto = new LoginDto(staff.getUsername(), token);
+            LoginDto loginDto = new LoginDto(staff.getUsername(), staff.getRole(), token);
             return loginDto;
 
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Invalid username or password", 
+                e
+            );
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage(), 
+                e
+            );
+        }
+    }
+
+    public LoginDto changePassword(ChangePasswordRequest changePasswordRequest) {
+        try {
+            Staff staff = staffRepository.findByUsername(changePasswordRequest.username());
+
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    changePasswordRequest.username(),
+                    changePasswordRequest.currentPassword()
+                )
+            );
+
+            String encodedNewPassword = passwordEncoder.encode(changePasswordRequest.newPassword());
+            staff.setPassword(encodedNewPassword);
+            staffRepository.save(staff);
+
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    changePasswordRequest.username(),
+                    changePasswordRequest.newPassword()
+                )
+            );
+
+            String token = jwtUtil.createToken(staff);
+            LoginDto loginDto = new LoginDto(staff.getUsername(), staff.getRole(), token);
+            return loginDto;
+
+        } catch (BadCredentialsException e) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Invalid password", 
                 e
             );
 

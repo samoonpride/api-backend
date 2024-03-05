@@ -1,6 +1,7 @@
 package com.samoonpride.backend.controller;
 
 import com.samoonpride.backend.dto.LoginDto;
+import com.samoonpride.backend.dto.request.ChangePasswordRequest;
 import com.samoonpride.backend.dto.request.StaffLoginRequest;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.serviceImpl.StaffServiceImpl;
@@ -30,5 +31,10 @@ public class StaffController {
         return staffService.createStaff(staff);
     }
     
+    @PatchMapping("/password")
+    @ResponseStatus(HttpStatus.OK)
+    public LoginDto changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        return staffService.changePassword(changePasswordRequest);
+    }
 
 }
