@@ -28,7 +28,6 @@ public class Issue {
     @NonNull
     private String title;
 
-    @NonNull
     private String thumbnailPath;
 
     private float latitude;

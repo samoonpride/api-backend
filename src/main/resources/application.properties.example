@@ -12,4 +12,13 @@ spring.datasource.password=
 spring.devtools.restart.enabled=true
 
 # Security
+security.enable=
 jwt.key=
+jwt.expiration=
+
+# Image
+thumbnail.height=
+thumbnail.width=
+
+# Line Token
+line.access.token=

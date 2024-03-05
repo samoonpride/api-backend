@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateIssueRequest {
     private UserDto user;
+    private Integer duplicateIssueId;
     private String title;
     private float latitude;
     private float longitude;
-    private String thumbnailPath;
     private List<MediaDto> media;
 }
