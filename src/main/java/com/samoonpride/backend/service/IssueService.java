@@ -18,6 +18,8 @@ public interface IssueService {
     List<IssueBubbleDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
 
     List<IssueBubbleDto> getAllIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
-
+    List<IssueBubbleDto> getDistinctIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
     List<IssueDto> getAllIssues();
+
+    List<IssueBubbleDto> getSubscribedIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
 }

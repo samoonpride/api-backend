@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IssueDto {
-    private int id;
+    private int issueId;
     private Integer duplicateIssueId;
     private String title;
     private float latitude;

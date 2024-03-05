@@ -18,10 +18,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtUtil {
-    
     private final String jwtSecretKey;
 
-    private long accessTokenValidity = 60*60*1000;
+    @Value("${jwt.expiration}")
+    private long accessTokenValidity = 86400000;
 
     private final JwtParser jwtParser;
 
@@ -75,12 +75,7 @@ public class JwtUtil {
     }
 
     public boolean validateClaims(Claims claims) throws AuthenticationException {
-        try {
-            return claims.getExpiration().after(new Date());
-        } catch (Exception e) {
-            throw e;
-        }
-
+        return claims.getExpiration().after(new Date());
     }
 
 }

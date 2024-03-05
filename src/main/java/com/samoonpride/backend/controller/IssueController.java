@@ -21,7 +21,7 @@ public class IssueController {
 
     @GetMapping("/get/all")
     @ResponseBody
-    public ResponseEntity<List<IssueDto>> getAllIssues() {
+    public ResponseEntity<List<IssueDto>> getAllIssuesByUser() {
         return ResponseEntity
                 .ok()
                 .body(issueService.getAllIssues());
@@ -50,7 +50,7 @@ public class IssueController {
     // get latest 10 issues
     @GetMapping("/line-user/get/{userId}/latest")
     @ResponseBody
-    public ResponseEntity<List<IssueBubbleDto>> getLatestIssues(
+    public ResponseEntity<List<IssueBubbleDto>> getLatestIssuesByUser(
             @PathVariable String userId,
             @RequestParam(required = false, defaultValue = "IN_CONSIDERATION,IN_PROGRESS") List<IssueStatus> status
     ) {
@@ -61,12 +61,34 @@ public class IssueController {
 
     @GetMapping("/line-user/get/{userId}/all")
     @ResponseBody
-    public ResponseEntity<List<IssueBubbleDto>> getAllIssues(
+    public ResponseEntity<List<IssueBubbleDto>> getAllIssuesByUser(
             @PathVariable String userId,
             @RequestParam(required = false, defaultValue = "IN_CONSIDERATION,IN_PROGRESS") List<IssueStatus> status
     ) {
         return ResponseEntity
                 .ok()
                 .body(issueService.getAllIssuesByLineUserAndStatus(userId, status));
+    }
+
+    @GetMapping("/line-user/get/{userId}/distinct")
+    @ResponseBody
+    public ResponseEntity<List<IssueBubbleDto>> getDistinctIssuesByUser(
+            @PathVariable String userId,
+            @RequestParam(required = false, defaultValue = "IN_CONSIDERATION,IN_PROGRESS") List<IssueStatus> status
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(issueService.getDistinctIssuesByLineUserAndStatus(userId, status));
+    }
+
+    @GetMapping("/line-user/get/{userId}/subscribed")
+    @ResponseBody
+    public ResponseEntity<List<IssueBubbleDto>> getSubscribedIssuesByUser(
+            @PathVariable String userId,
+            @RequestParam(required = false, defaultValue = "IN_CONSIDERATION,IN_PROGRESS") List<IssueStatus> status
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(issueService.getSubscribedIssuesByLineUserAndStatus(userId, status));
     }
 }
