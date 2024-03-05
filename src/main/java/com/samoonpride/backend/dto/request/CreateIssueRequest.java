@@ -17,6 +17,5 @@ public class CreateIssueRequest {
     private String title;
     private float latitude;
     private float longitude;
-    private String thumbnailPath;
     private List<MediaDto> media;
 }

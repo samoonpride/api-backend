@@ -36,6 +36,7 @@ public class IssueServiceImpl implements IssueService {
         log.info("Creating issue");
         Issue issue = buildIssueFromRequest(createIssueRequest);
         issueRepository.save(issue);
+        // It will set thumbnailPath in createMultimedia
         multimediaService.createMultimedia(issue, createIssueRequest.getMedia());
     }
 
@@ -51,7 +52,6 @@ public class IssueServiceImpl implements IssueService {
         } else {
             issue.setStatus(IssueStatus.IN_CONSIDERATION);
         }
-        issue.setThumbnailPath(request.getThumbnailPath());
         issue.setLatitude(request.getLatitude());
         issue.setLongitude(request.getLongitude());
         return issue;

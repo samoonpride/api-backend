@@ -15,3 +15,10 @@ spring.devtools.restart.enabled=true
 security.enable=
 jwt.key=
 jwt.expiration=
+
+# Image
+thumbnail.height=
+thumbnail.width=
+
+# Line Token
+line.access.token=
