@@ -19,4 +19,6 @@ public interface StaffService {
 
     List<StaffDto> getStaffs();
 
+    void deleteStaff(int staffId);
+
 }

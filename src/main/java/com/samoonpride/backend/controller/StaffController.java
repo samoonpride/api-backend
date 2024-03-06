@@ -13,9 +13,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RequiredArgsConstructor
@@ -45,6 +42,11 @@ public class StaffController {
     @GetMapping()
     public List<StaffDto> getStaffs() {
         return staffService.getStaffs();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteStaff(@PathVariable int id) {
+        staffService.deleteStaff(id);
     }
     
 }

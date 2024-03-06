@@ -127,4 +127,11 @@ public class StaffServiceImpl implements StaffService {
         return staffs;
     }
 
+    @Override
+    public void deleteStaff(int staffId) {
+        staffRepository.findById(staffId).ifPresent((staff) -> {
+            staffRepository.delete(staff);
+        });
+    }
+
 }
