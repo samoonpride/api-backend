@@ -2,9 +2,11 @@ package com.samoonpride.backend.service;
 
 import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.IssueDto;
+import com.samoonpride.backend.dto.NotificationBubbleDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
+import com.samoonpride.backend.model.Issue;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ public interface IssueService {
     void updateIssueStatus(int issueId, UpdateIssueStatusRequest updateIssueStatusRequest);
 
     void reopenIssue(int issueId);
+
+    List<NotificationBubbleDto> createNotificationBubbleDtoList(Issue issue);
 
     List<IssueBubbleDto> getLatestTenIssuesByLineUserAndStatus(String userId, List<IssueStatus> status);
 

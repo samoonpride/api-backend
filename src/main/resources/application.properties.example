@@ -20,5 +20,6 @@ jwt.expiration=
 thumbnail.height=
 thumbnail.width=
 
-# Line Token
-line.access.token=
+# Line
+line.bot.line-webhook.url=
+line.bot.channel-token=
