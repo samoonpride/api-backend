@@ -18,4 +18,6 @@ public interface IssueRepository extends CrudRepository<Issue, Integer> {
     List<Issue> findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
 
     List<Issue> findFirst10ByLineUser_UserIdNotAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
+
+    List<Issue> findByDuplicateIssueId(int duplicateIssueId);
 }
