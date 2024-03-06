@@ -1,6 +1,7 @@
 package com.samoonpride.backend.config;
 
 import com.samoonpride.backend.converter.IssueToIssueDtoConverter;
+import com.samoonpride.backend.converter.StaffToStaffDtoConverter;
 import com.samoonpride.backend.dto.MediaDto;
 import com.samoonpride.backend.dto.request.CreateLineUserRequest;
 import com.samoonpride.backend.model.Image;
@@ -36,6 +37,7 @@ public class ModelMapperConfig {
             }
         });
         modelMapper.addConverter(new IssueToIssueDtoConverter());
+        modelMapper.addConverter(new StaffToStaffDtoConverter());
 
         return modelMapper;
     }

@@ -2,6 +2,7 @@ package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.dto.LoginDto;
+import com.samoonpride.backend.dto.StaffDto;
 import com.samoonpride.backend.dto.request.ChangePasswordRequest;
 import com.samoonpride.backend.dto.request.StaffLoginRequest;
 import com.samoonpride.backend.model.Staff;
@@ -9,6 +10,9 @@ import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,6 +30,7 @@ public class StaffServiceImpl implements StaffService {
     private StaffRepository staffRepository;
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
+    private ModelMapper modelMapper;
 
     public Staff findStaffByUsername(String username) {
         return staffRepository.findByUsername(username);
@@ -111,4 +116,15 @@ public class StaffServiceImpl implements StaffService {
             );
         }
     }
+
+    @Override
+    public List<StaffDto> getStaffs() {
+        List<StaffDto> staffs = new ArrayList<>();
+        staffRepository.findAll().forEach((staff) -> {
+            staffs.add(modelMapper.map(staff, StaffDto.class));
+        });
+
+        return staffs;
+    }
+
 }
