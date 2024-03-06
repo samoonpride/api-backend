@@ -30,13 +30,13 @@ public class JwtUtil {
 
     public JwtUtil(@Value("${jwt.key}") String jwtSecretKey) {
         this.jwtSecretKey = jwtSecretKey;
-        System.out.println(jwtSecretKey);
         this.jwtParser = Jwts.parser().setSigningKey(jwtSecretKey);
     }
 
     public String createToken(Staff staff) {
         Claims claims = Jwts.claims().setSubject(staff.getUsername());
         claims.put("username", staff.getUsername());
+        claims.put("role", staff.getRole());
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
         return Jwts.builder()
@@ -75,7 +75,13 @@ public class JwtUtil {
     }
 
     public boolean validateClaims(Claims claims) throws AuthenticationException {
-        return claims.getExpiration().after(new Date());
+        try {
+
+            return claims.getExpiration().after(new Date());
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
 }
