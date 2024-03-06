@@ -18,15 +18,14 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class Subscribe {
-
+public class StaffIssueAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "line_user_id")
-    private LineUser lineUser;
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
 
     @ManyToOne
     @JoinColumn(name = "issue_id")
