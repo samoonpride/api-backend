@@ -2,6 +2,8 @@ package com.samoonpride.backend.converter;
 
 import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.model.Issue;
+import com.samoonpride.backend.model.Staff;
+import com.samoonpride.backend.model.StaffIssueAssignment;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -15,6 +17,8 @@ public class IssueToIssueDtoConverter implements Converter<Issue, IssueDto> {
         if (destination == null) {
             destination = new IssueDto();
         }
+        destination.setAssigneeIds(source.getAssignees().stream()
+                .map(StaffIssueAssignment::getStaff).map(Staff::getId).toList());
         destination.setIssueId(source.getId());
         destination.setTitle(source.getTitle());
         destination.setLatitude(source.getLatitude());

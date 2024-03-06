@@ -3,6 +3,7 @@ package com.samoonpride.backend.controller;
 import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
+import com.samoonpride.backend.dto.request.UpdateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.serviceImpl.IssueServiceImpl;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,6 +47,16 @@ public class IssueController {
     @ResponseStatus(HttpStatus.OK)
     public void reopenIssue(@PathVariable int issueId) {
         issueService.reopenIssue(issueId);
+    }
+
+    // update issue
+    @PatchMapping("/{issueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateIssue(@PathVariable int issueId,
+                            @RequestParam("media") MultipartFile media,
+                            @RequestBody UpdateIssueRequest updateIssueRequest
+    ) {
+        issueService.updateIssue(issueId, media, updateIssueRequest);
     }
 
     // get latest 10 issues

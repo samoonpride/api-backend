@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,5 +69,27 @@ public class MediaUtils {
 
         // remove public from the path
         return videoFilePath.subpath(1, videoFilePath.getNameCount()).toString();
+    }
+
+    @SneakyThrows
+    public static String saveImage(String userId, MultipartFile media) {
+        String extension = Optional.ofNullable(media.getContentType())
+                .map(contentType -> contentType.split("/")[1])
+                .orElse("jpg");
+        log.info("Image extension: " + extension);
+
+        Path imagePath = Path.of("public/images/" + LocalDateTime.now().format(dateTimeFormatter) + "/" + userId + "/staffUpload");
+        String imageFileName = UUID.randomUUID() + "." + extension;
+
+        if (!Files.exists(imagePath)) {
+            Files.createDirectories(imagePath);
+        }
+
+        Path imageFilePath = imagePath.resolve(imageFileName);
+        media.transferTo(imageFilePath);
+        log.info("Image saved: " + imageFilePath);
+
+        // remove public from the path
+        return imageFilePath.subpath(1, imageFilePath.getNameCount()).toString();
     }
 }

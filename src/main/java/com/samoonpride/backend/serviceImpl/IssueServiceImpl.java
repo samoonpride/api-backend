@@ -1,6 +1,7 @@
 package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.config.LineConfig;
+import com.samoonpride.backend.config.ModelMapperConfig;
 import com.samoonpride.backend.config.WebClientConfig;
 import com.samoonpride.backend.converter.IssueToIssueBubbleDtoConverter;
 import com.samoonpride.backend.converter.IssueToNotificationBubbleDtoConverter;
@@ -9,17 +10,20 @@ import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.NotificationBubbleDto;
 import com.samoonpride.backend.dto.UserDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
+import com.samoonpride.backend.dto.request.UpdateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.enums.UserEnum;
 import com.samoonpride.backend.model.Issue;
 import com.samoonpride.backend.repository.IssueRepository;
+import com.samoonpride.backend.repository.StaffIssueAssignmentRepository;
 import com.samoonpride.backend.repository.SubscribeRepository;
 import com.samoonpride.backend.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
+    private final StaffIssueAssignmentRepository staffIssueAssignmentRepository;
     private final SubscribeRepository subscribeRepository;
     private final LineUserServiceImpl lineUserService;
     private final MediaServiceImpl multimediaService;
@@ -94,6 +99,26 @@ public class IssueServiceImpl implements IssueService {
             notifyWhenIssueStatusChange(issue);
         }
         throw new IllegalArgumentException("Issue is not status completed");
+    }
+
+    @Override
+    public void updateIssue(int issueId, MultipartFile media, UpdateIssueRequest updateIssueRequest) {
+        Issue issue = issueRepository.findById(issueId);
+        issue.setTitle(updateIssueRequest.getTitle());
+        Optional<Issue> duplicateIssue = issueRepository.findById(updateIssueRequest.getDuplicateIssueId());
+        issue.setDuplicateIssue(duplicateIssue.orElse(null));
+        if (issue.getStatus() != updateIssueRequest.getStatus()) {
+            issue.setStatus(updateIssueRequest.getStatus());
+            // notify when issue status change
+            notifyWhenIssueStatusChange(issue);
+        }
+        issue.setAssignees(staffIssueAssignmentRepository.findByIssueIdIn(updateIssueRequest.getAssigneeIds()));
+        issue.setLatitude(updateIssueRequest.getLatitude());
+        issue.setLongitude(updateIssueRequest.getLongitude());
+        issueRepository.save(issue);
+
+        // It will set thumbnailPath in createMultimedia
+        multimediaService.updateIssueMedia(issue, media);
     }
 
     private void notifyWhenIssueStatusChange(Issue issue) {
@@ -183,7 +208,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public List<IssueDto> getAllIssues() {
         log.info("get all issues");
-        ModelMapper modelMapper = new ModelMapper();
+        ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 
         List<Issue> issueList = (List<Issue>) issueRepository.findAll();
         return issueList.stream()
