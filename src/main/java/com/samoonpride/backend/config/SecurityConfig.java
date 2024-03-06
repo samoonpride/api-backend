@@ -5,6 +5,9 @@ import com.samoonpride.backend.authentication.JwtAuthorizationFilter;
 import com.samoonpride.backend.serviceImpl.StaffLoginDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +48,16 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         if (isEnable) {
             http
+                    .cors((cors) -> {
+                        CorsConfiguration configuration = new CorsConfiguration();
+                        configuration.setAllowedOrigins(Arrays.asList("*"));
+                        configuration.setAllowedMethods(Arrays.asList("*"));
+                        configuration.setAllowedHeaders(Arrays.asList("*"));
+                        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                        source.registerCorsConfiguration("/**", configuration);
+
+                        cors.configurationSource(source);
+                    })
                     .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests((authorizeHttpRequests) ->
                             authorizeHttpRequests
