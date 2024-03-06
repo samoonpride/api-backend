@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -102,11 +103,14 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void updateIssue(int issueId, MultipartFile media, UpdateIssueRequest updateIssueRequest) {
+    @Transactional
+    public void updateIssue(int issueId, UpdateIssueRequest updateIssueRequest, MultipartFile media) {
         Issue issue = issueRepository.findById(issueId);
         issue.setTitle(updateIssueRequest.getTitle());
-        Optional<Issue> duplicateIssue = issueRepository.findById(updateIssueRequest.getDuplicateIssueId());
-        issue.setDuplicateIssue(duplicateIssue.orElse(null));
+        if (updateIssueRequest.getDuplicateIssueId() != null) {
+            Optional<Issue> duplicateIssue = issueRepository.findById(updateIssueRequest.getDuplicateIssueId());
+            issue.setDuplicateIssue(duplicateIssue.orElse(null));
+        }
         if (issue.getStatus() != updateIssueRequest.getStatus()) {
             issue.setStatus(updateIssueRequest.getStatus());
             // notify when issue status change

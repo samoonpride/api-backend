@@ -19,7 +19,7 @@ public interface IssueService {
 
     void reopenIssue(int issueId);
 
-    void updateIssue(int issueId, MultipartFile media, UpdateIssueRequest updateIssueRequest);
+    void updateIssue(int issueId, UpdateIssueRequest updateIssueRequest, MultipartFile media);
 
     List<NotificationBubbleDto> createNotificationBubbleDtoList(Issue issue);
 

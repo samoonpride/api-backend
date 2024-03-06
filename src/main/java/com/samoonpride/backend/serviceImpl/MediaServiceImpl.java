@@ -61,7 +61,7 @@ public class MediaServiceImpl implements MediaService {
         String userId = issue.getLineUser().getUserId();
         Image image = new Image();
         image.setMessageId("Staff upload");
-        image.setPath(MediaUtils.saveImage(userId, image.getMessageId()));
+        image.setPath(MediaUtils.saveImage(userId, media));
         image.setIssue(issue);
 
         // Set thumbnail
