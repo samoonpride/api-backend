@@ -12,4 +12,14 @@ spring.datasource.password=
 spring.devtools.restart.enabled=true
 
 # Security
+security.enable=
 jwt.key=
+jwt.expiration=
+
+# Image
+thumbnail.height=
+thumbnail.width=
+
+# Line
+line.bot.line-webhook.url=
+line.bot.channel-token=

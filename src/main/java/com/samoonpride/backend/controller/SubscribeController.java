@@ -21,10 +21,10 @@ public class SubscribeController {
         subscribeService.subscribe(subscribeRequest.getLineUserId(), subscribeRequest.getIssueId());
     }
 
-    @DeleteMapping("/line-user/unsubscribe")
+    @DeleteMapping("/line-user/{lineUserId}/unsubscribe/{issueId}")
     @ResponseStatus(HttpStatus.OK)
-    public void unsubscribe(@RequestBody SubscribeRequest subscribeRequest) {
-        log.info("subscribeRequest: {}", subscribeRequest);
-        subscribeService.unsubscribe(subscribeRequest.getLineUserId(), subscribeRequest.getIssueId());
+    public void unsubscribe(@PathVariable String lineUserId, @PathVariable int issueId) {
+        log.info("unsubscribe: lineUserId: {}, issueId: {}", lineUserId, issueId);
+        subscribeService.unsubscribe(lineUserId, issueId);
     }
 }

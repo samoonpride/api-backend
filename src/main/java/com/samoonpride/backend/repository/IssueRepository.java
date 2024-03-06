@@ -11,7 +11,13 @@ import java.util.List;
 public interface IssueRepository extends CrudRepository<Issue, Integer> {
     Issue findById(int issueId);
 
+    List<Issue> findByIdIn(List<Integer> id);
+
     List<Issue> findFirst10ByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
 
     List<Issue> findAllByLineUser_UserIdAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
+
+    List<Issue> findFirst10ByLineUser_UserIdNotAndStatusInOrderByCreatedDateDesc(String userId, List<IssueStatus> status);
+
+    List<Issue> findByDuplicateIssueId(int duplicateIssueId);
 }

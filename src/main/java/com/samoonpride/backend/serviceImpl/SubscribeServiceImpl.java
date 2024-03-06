@@ -49,9 +49,4 @@ public class SubscribeServiceImpl implements SubscribeService{
             subscribeRepository.deleteByLineUser_UserIdAndIssueId(lineUserId, issueId);
         }
     }
-
-    @Override
-    public void notifySubscribers(int issueId) {
-
-    }
 }

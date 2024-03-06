@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 public class MediaDto {
     private MediaEnum type;
     private String messageId;
-    private String path;
 }

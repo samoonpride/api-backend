@@ -5,10 +5,8 @@ import com.samoonpride.backend.model.Issue;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.stereotype.Component;
 
 @Log4j2
-@Component
 public class IssueToIssueDtoConverter implements Converter<Issue, IssueDto> {
     @Override
     public IssueDto convert(MappingContext<Issue, IssueDto> context) {
@@ -17,7 +15,7 @@ public class IssueToIssueDtoConverter implements Converter<Issue, IssueDto> {
         if (destination == null) {
             destination = new IssueDto();
         }
-        destination.setId(source.getId());
+        destination.setIssueId(source.getId());
         destination.setTitle(source.getTitle());
         destination.setLatitude(source.getLatitude());
         destination.setLongitude(source.getLongitude());
