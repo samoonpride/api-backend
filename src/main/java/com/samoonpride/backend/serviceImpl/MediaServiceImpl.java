@@ -10,11 +10,13 @@ import com.samoonpride.backend.model.Media;
 import com.samoonpride.backend.model.Video;
 import com.samoonpride.backend.repository.MediaRepository;
 import com.samoonpride.backend.service.MediaService;
+import com.samoonpride.backend.utils.MediaUtils;
 import com.samoonpride.backend.utils.ThumbnailUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -52,5 +54,20 @@ public class MediaServiceImpl implements MediaService {
 
             mediaRepository.save(media);
         }
+    }
+
+    @Override
+    public void updateIssueMedia(Issue issue, MultipartFile media) {
+        String userId = issue.getLineUser().getUserId();
+        Image image = new Image();
+        image.setMessageId("Staff upload");
+        image.setPath(MediaUtils.saveImage(userId, media));
+        image.setIssue(issue);
+
+        // Set thumbnail
+        Path mediaPath = Path.of("public").resolve(image.getPath());
+        issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile()));
+        // Save image
+        mediaRepository.save(image);
     }
 }

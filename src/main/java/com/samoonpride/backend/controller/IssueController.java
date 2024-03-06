@@ -1,23 +1,29 @@
 package com.samoonpride.backend.controller;
 
+import com.samoonpride.backend.config.ModelMapperConfig;
 import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.IssueDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
+import com.samoonpride.backend.dto.request.UpdateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.serviceImpl.IssueServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/issue")
 public class IssueController {
     private final IssueServiceImpl issueService;
+    private final ModelMapperConfig modelMapperConfig;
 
     @GetMapping("/get/all")
     @ResponseBody
@@ -45,6 +51,17 @@ public class IssueController {
     @ResponseStatus(HttpStatus.OK)
     public void reopenIssue(@PathVariable int issueId) {
         issueService.reopenIssue(issueId);
+    }
+
+    // update issue
+    @PatchMapping("/{issueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateIssue(@PathVariable int issueId,
+                            @RequestParam("image") MultipartFile media,
+                            @RequestParam("issue") JSONObject issueJson
+    ) {
+        UpdateIssueRequest updateIssueRequest = modelMapperConfig.modelMapper().map(issueJson, UpdateIssueRequest.class);
+        issueService.updateIssue(issueId, updateIssueRequest, media);
     }
 
     // get latest 10 issues

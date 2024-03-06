@@ -51,6 +51,9 @@ public class Issue {
     private Issue duplicateIssue;
 
     @OneToMany(mappedBy = "issue")
+    private Set<StaffIssueAssignment> assignees = new HashSet<>();
+
+    @OneToMany(mappedBy = "issue")
     private Set<Subscribe> subscribes = new HashSet<>();
 
     @OneToMany(mappedBy = "issue")

@@ -43,6 +43,9 @@ public class Staff {
     @OneToMany(mappedBy = "staff")
     private Set<Issue> issues = new HashSet<>();
 
+    @OneToMany(mappedBy = "staff")
+    private Set<StaffIssueAssignment> assignees = new HashSet<>();
+
     @CreatedDate
     private LocalDateTime createdDate;
 
