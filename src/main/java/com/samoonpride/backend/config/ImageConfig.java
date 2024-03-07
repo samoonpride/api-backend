@@ -11,12 +11,12 @@ public class ImageConfig {
     @Getter
     private static int thumbnailWidth;
 
-    @Value("${thumbnail.height}")
+    @Value("${thumbnail.height:640}")
     public void setThumbnailHeight(String height) {
         thumbnailHeight = Integer.parseInt(height);
     }
 
-    @Value("${thumbnail.width}")
+    @Value("${thumbnail.width:480}")
     public void setThumbnailWidth(String width) {
         thumbnailWidth = Integer.parseInt(width);
     }

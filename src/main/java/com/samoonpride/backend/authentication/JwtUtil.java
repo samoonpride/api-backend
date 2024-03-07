@@ -20,15 +20,15 @@ import jakarta.servlet.http.HttpServletRequest;
 public class JwtUtil {
     private final String jwtSecretKey;
 
-    @Value("${jwt.expiration}")
-    private long accessTokenValidity = 86400000;
+    @Value("#{new Long('${jwt.accessTokenValidity:86400000}')}")
+    private long accessTokenValidity;
 
     private final JwtParser jwtParser;
 
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    public JwtUtil(@Value("${jwt.key}") String jwtSecretKey) {
+    public JwtUtil(@Value("${jwt.key:temp}") String jwtSecretKey) {
         this.jwtSecretKey = jwtSecretKey;
         this.jwtParser = Jwts.parser().setSigningKey(jwtSecretKey);
     }

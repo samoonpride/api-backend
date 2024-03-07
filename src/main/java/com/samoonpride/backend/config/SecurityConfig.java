@@ -33,7 +33,7 @@ public class SecurityConfig {
     private final StaffLoginDetailServiceImpl staffLoginDetailService;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    @Value("${security.enable}")
+    @Value("#{new Boolean('${security.enable:true}')}")
     private boolean isEnable = true;
 
     @Bean
