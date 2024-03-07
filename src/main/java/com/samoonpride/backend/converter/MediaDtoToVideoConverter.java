@@ -22,7 +22,7 @@ public class MediaDtoToVideoConverter implements Converter<MediaDto, Video> {
         }
         destination.setMessageId(source.getMessageId());
         destination.setPath(
-                MediaUtils.saveImage(
+                MediaUtils.saveVideo(
                         userId,
                         source.getMessageId()
                 )

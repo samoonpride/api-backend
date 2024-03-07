@@ -49,7 +49,7 @@ public class MediaServiceImpl implements MediaService {
             if (issue.getThumbnailPath() == null) {
                 log.info("Setting thumbnail");
                 Path mediaPath = Path.of("public").resolve(media.getPath());
-                issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile()));
+                issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile(), dto.getType()));
             }
 
             mediaRepository.save(media);
@@ -66,7 +66,7 @@ public class MediaServiceImpl implements MediaService {
 
         // Set thumbnail
         Path mediaPath = Path.of("public").resolve(image.getPath());
-        issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile()));
+        issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile(), MediaEnum.IMAGE));
         // Save image
         mediaRepository.save(image);
     }

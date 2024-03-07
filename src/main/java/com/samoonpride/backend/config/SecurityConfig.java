@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Value("${security.enable}")
-    private boolean isEnable = false;
+    private boolean isEnable = true;
 
     @Bean
     AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder)
