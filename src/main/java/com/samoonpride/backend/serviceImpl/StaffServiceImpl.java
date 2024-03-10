@@ -5,13 +5,13 @@ import com.samoonpride.backend.dto.LoginDto;
 import com.samoonpride.backend.dto.StaffDto;
 import com.samoonpride.backend.dto.request.ChangePasswordRequest;
 import com.samoonpride.backend.dto.request.StaffLoginRequest;
+import com.samoonpride.backend.enums.StaffEnum;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;
+import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Log4j2
 @Service
 @AllArgsConstructor
 public class StaffServiceImpl implements StaffService {
@@ -32,27 +36,36 @@ public class StaffServiceImpl implements StaffService {
     private PasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
 
+    @Override
     public Staff findStaffByUsername(String username) {
         return staffRepository.findByUsername(username);
     }
 
-    public LoginDto createStaff(Staff staff) {
+    @Override
+    public LoginDto createStaff(Staff staff, Claims claims) {
+        if (claims.get("role", StaffEnum.class).hasLowerPriorityThan(staff.getRole())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You are not authorized to create this staff"
+            );
+        }
         Staff encodedPasswordStaff = new Staff(
-            staff.getUsername(), 
-            passwordEncoder.encode(staff.getPassword()), 
-            staff.getRole()
+                staff.getUsername(),
+                passwordEncoder.encode(staff.getPassword()),
+                staff.getRole()
         );
         staffRepository.save(encodedPasswordStaff);
         return login(new StaffLoginRequest(staff.getUsername(), staff.getPassword()));
     }
 
+    @Override
     public LoginDto login(StaffLoginRequest staffLoginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    staffLoginRequest.getUsername(), 
-                    staffLoginRequest.getPassword()
-                )
+                    new UsernamePasswordAuthenticationToken(
+                            staffLoginRequest.getUsername(),
+                            staffLoginRequest.getPassword()
+                    )
             );
             Staff staff = staffRepository.findByUsername(authentication.getName());
             String token = jwtUtil.createToken(staff);
@@ -61,29 +74,31 @@ public class StaffServiceImpl implements StaffService {
 
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Invalid username or password", 
-                e
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid username or password",
+                    e
             );
 
         } catch (Exception e) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage(), 
-                e
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e
             );
         }
     }
+
+    @Override
 
     public LoginDto changePassword(ChangePasswordRequest changePasswordRequest) {
         try {
             Staff staff = staffRepository.findByUsername(changePasswordRequest.username());
 
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    changePasswordRequest.username(),
-                    changePasswordRequest.currentPassword()
-                )
+                    new UsernamePasswordAuthenticationToken(
+                            changePasswordRequest.username(),
+                            changePasswordRequest.currentPassword()
+                    )
             );
 
             String encodedNewPassword = passwordEncoder.encode(changePasswordRequest.newPassword());
@@ -91,10 +106,10 @@ public class StaffServiceImpl implements StaffService {
             staffRepository.save(staff);
 
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    changePasswordRequest.username(),
-                    changePasswordRequest.newPassword()
-                )
+                    new UsernamePasswordAuthenticationToken(
+                            changePasswordRequest.username(),
+                            changePasswordRequest.newPassword()
+                    )
             );
 
             String token = jwtUtil.createToken(staff);
@@ -103,16 +118,16 @@ public class StaffServiceImpl implements StaffService {
 
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Invalid password", 
-                e
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid password",
+                    e
             );
 
         } catch (Exception e) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage(), 
-                e
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e
             );
         }
     }
@@ -128,10 +143,30 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public void deleteStaff(int staffId) {
-        staffRepository.findById(staffId).ifPresent((staff) -> {
-            staffRepository.delete(staff);
-        });
+    public void deleteStaff(int id, Claims claims) {
+        Staff staff = staffRepository.findById(id).orElse(null);
+        if (staff == null || claims.get("role", StaffEnum.class).hasLowerPriorityThan(staff.getRole())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You are not authorized to delete this staff"
+            );
+        }
+        staffRepository.delete(staff);
+    }
+
+    @Override
+    public void createSuperOperator(String username, String password) {
+        if (staffRepository.existsByRole(StaffEnum.SUPER_OPERATOR)) {
+            log.info("Super operator already exists");
+            return;
+        }
+        Staff staff = new Staff(
+                username,
+                passwordEncoder.encode(password),
+                StaffEnum.SUPER_OPERATOR
+        );
+        staffRepository.save(staff);
+        log.info("Super operator created");
     }
 
 }

@@ -12,9 +12,9 @@ spring.datasource.password=
 spring.devtools.restart.enabled=true
 
 # Security
-security.enable=
+security.enable=true
 jwt.key=
-jwt.expiration=
+jwt.accessTokenValidity=
 
 # Image
 thumbnail.height=
@@ -23,3 +23,7 @@ thumbnail.width=
 # Line
 line.bot.line-webhook.url=
 line.bot.channel-token=
+
+# Set Super Operator
+superOperator.username=
+superOperator.password=

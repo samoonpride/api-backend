@@ -1,5 +1,6 @@
 package com.samoonpride.backend.repository;
 
+import com.samoonpride.backend.enums.StaffEnum;
 import com.samoonpride.backend.model.Staff;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,6 @@ public interface StaffRepository extends CrudRepository<Staff, Integer> {
     List<Staff> findByIdIn(List<Integer> id);
 
     boolean existsByUsernameAndPassword(String username, String password);
+
+    boolean existsByRole(StaffEnum role);
 }
