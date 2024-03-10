@@ -18,5 +18,14 @@ public enum StaffEnum {
         return this.priority >= role.priority;
     }
 
+    public static StaffEnum fromString(String role) {
+        return switch (role) {
+            case "SUPER_OPERATOR" -> SUPER_OPERATOR;
+            case "OPERATOR" -> OPERATOR;
+            case "STAFF" -> STAFF;
+            default -> throw new IllegalStateException("Unexpected value");
+        };
+    }
+
 
 }

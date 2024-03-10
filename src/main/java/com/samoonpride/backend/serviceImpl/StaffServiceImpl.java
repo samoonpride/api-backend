@@ -11,6 +11,7 @@ import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public LoginDto createStaff(Staff staff, Claims claims) {
-        if (claims.get("role", StaffEnum.class).hasLowerPriorityThan(staff.getRole())) {
+        String role = (String) claims.get("role");
+        if (staff == null || StaffEnum.fromString(role).hasLowerPriorityThan(staff.getRole())) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You are not authorized to create this staff"
@@ -69,8 +72,7 @@ public class StaffServiceImpl implements StaffService {
             );
             Staff staff = staffRepository.findByUsername(authentication.getName());
             String token = jwtUtil.createToken(staff);
-            LoginDto loginDto = new LoginDto(staff.getUsername(), staff.getRole(), token);
-            return loginDto;
+            return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(
@@ -113,8 +115,7 @@ public class StaffServiceImpl implements StaffService {
             );
 
             String token = jwtUtil.createToken(staff);
-            LoginDto loginDto = new LoginDto(staff.getUsername(), staff.getRole(), token);
-            return loginDto;
+            return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(
@@ -145,7 +146,8 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public void deleteStaff(int id, Claims claims) {
         Staff staff = staffRepository.findById(id).orElse(null);
-        if (staff == null || claims.get("role", StaffEnum.class).hasLowerPriorityThan(staff.getRole())) {
+        String role = (String) claims.get("role");
+        if (staff == null || StaffEnum.fromString(role).hasLowerPriorityThan(staff.getRole())) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "You are not authorized to delete this staff"
@@ -162,11 +164,23 @@ public class StaffServiceImpl implements StaffService {
         }
         Staff staff = new Staff(
                 username,
-                passwordEncoder.encode(password),
+                passwordEncoder.encode(Md5PasswordEncode(password)),
                 StaffEnum.SUPER_OPERATOR
         );
         staffRepository.save(staff);
         log.info("Super operator created");
+    }
+
+    @SneakyThrows
+    private static String Md5PasswordEncode(String password) {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(password.getBytes());
+        byte[] digest = md.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        return sb.toString();
     }
 
 }

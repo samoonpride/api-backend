@@ -3,7 +3,6 @@ package com.samoonpride.backend.config;
 import com.samoonpride.backend.authentication.Http401UnauthorizedEntryPoint;
 import com.samoonpride.backend.authentication.JwtAuthorizationFilter;
 import com.samoonpride.backend.serviceImpl.StaffLoginDetailServiceImpl;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -63,10 +60,21 @@ public class SecurityConfig {
                     .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests((authorizeHttpRequests) ->
                             authorizeHttpRequests
-                                    .requestMatchers("/api/**").permitAll()
+                                    // Line Controller
+                                    .requestMatchers("/api/line-user/create").permitAll()
+                                    // Subscribe Controller
+                                    .requestMatchers("/api/subscriber/**").permitAll()
+                                    // Staff Controller
+                                    .requestMatchers("/api/staff/login").permitAll()
+                                    // Issue Controller
+                                    .requestMatchers("/api/issue/line-user/get/**").permitAll()
+                                    .requestMatchers("/api/issue/get/**").permitAll()
+                                    .requestMatchers("/api/issue/create").permitAll()
+                                    // Public Media
                                     .requestMatchers("/thumbnail/**").permitAll()
                                     .requestMatchers("/images/**").permitAll()
                                     .requestMatchers("/videos/**").permitAll()
+
                                     .anyRequest().authenticated()
                     )
                     .sessionManagement((management) ->

@@ -18,7 +18,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Issue {
     @Id
@@ -35,7 +34,6 @@ public class Issue {
     private float longitude;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     private IssueStatus status = IssueStatus.IN_CONSIDERATION;
 
     @ManyToOne
