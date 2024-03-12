@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum StaffEnum {
     SUPER_OPERATOR(0),
     OPERATOR(1),
-    STAFF(2);
+    STAFF(2),
+    PENDING(3);
 
     private final int priority;
 
@@ -23,6 +24,7 @@ public enum StaffEnum {
             case "SUPER_OPERATOR" -> SUPER_OPERATOR;
             case "OPERATOR" -> OPERATOR;
             case "STAFF" -> STAFF;
+            case "PENDING" -> PENDING;
             default -> throw new IllegalStateException("Unexpected value");
         };
     }

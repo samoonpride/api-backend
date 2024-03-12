@@ -66,6 +66,7 @@ public class SecurityConfig {
                                     .requestMatchers("/api/subscriber/**").permitAll()
                                     // Staff Controller
                                     .requestMatchers("/api/staff/login").permitAll()
+                                    .requestMatchers("/api/staff/register").permitAll()
                                     // Issue Controller
                                     .requestMatchers("/api/issue/line-user/get/**").permitAll()
                                     .requestMatchers("/api/issue/get/**").permitAll()

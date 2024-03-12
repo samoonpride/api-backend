@@ -3,9 +3,7 @@ package com.samoonpride.backend.controller;
 import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.dto.LoginDto;
 import com.samoonpride.backend.dto.StaffDto;
-import com.samoonpride.backend.dto.request.ChangePasswordRequest;
-import com.samoonpride.backend.dto.request.StaffLoginRequest;
-import com.samoonpride.backend.enums.StaffEnum;
+import com.samoonpride.backend.dto.request.*;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.serviceImpl.StaffServiceImpl;
 import io.jsonwebtoken.Claims;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,6 +28,26 @@ public class StaffController {
     @ResponseStatus(HttpStatus.OK)
     public LoginDto login(@RequestBody StaffLoginRequest staffLoginRequest) {
         return staffService.login(staffLoginRequest);
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@RequestBody StaffRegisterRequest staffRegisterRequest) {
+        staffService.register(staffRegisterRequest);
+    }
+
+    @PostMapping("/approve")
+    @ResponseStatus(HttpStatus.OK)
+    public void approveRegistration(HttpServletRequest request, @RequestBody ApproveRegistrationRequest approveRegistrationRequest) {
+        Claims claims = jwtUtil.resolveClaims(request);
+        staffService.approveRegistration(approveRegistrationRequest, claims);
+    }
+
+    @PostMapping("/decline")
+    @ResponseStatus(HttpStatus.OK)
+    public void declineRegistration(HttpServletRequest request, @RequestBody DeclineRegistrationRequest declineRegistrationRequest) {
+        Claims claims = jwtUtil.resolveClaims(request);
+        staffService.declineRegistration(declineRegistrationRequest, claims);
     }
 
     @PostMapping("/create")

@@ -16,4 +16,6 @@ public interface StaffRepository extends CrudRepository<Staff, Integer> {
     boolean existsByUsernameAndPassword(String username, String password);
 
     boolean existsByRole(StaffEnum role);
+
+    boolean existsByUsername(String username);
 }

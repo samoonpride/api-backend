@@ -3,8 +3,7 @@ package com.samoonpride.backend.serviceImpl;
 import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.dto.LoginDto;
 import com.samoonpride.backend.dto.StaffDto;
-import com.samoonpride.backend.dto.request.ChangePasswordRequest;
-import com.samoonpride.backend.dto.request.StaffLoginRequest;
+import com.samoonpride.backend.dto.request.*;
 import com.samoonpride.backend.enums.StaffEnum;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
@@ -37,6 +36,18 @@ public class StaffServiceImpl implements StaffService {
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
+
+    @SneakyThrows
+    private static String Md5PasswordEncode(String password) {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(password.getBytes());
+        byte[] digest = md.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        return sb.toString();
+    }
 
     @Override
     public Staff findStaffByUsername(String username) {
@@ -71,6 +82,12 @@ public class StaffServiceImpl implements StaffService {
                     )
             );
             Staff staff = staffRepository.findByUsername(authentication.getName());
+            if (staff.getRole() == StaffEnum.PENDING) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Your account is not approved yet"
+                );
+            }
             String token = jwtUtil.createToken(staff);
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
@@ -91,7 +108,50 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public void register(StaffRegisterRequest staffRegisterRequest) {
+        if (staffRepository.existsByUsername(staffRegisterRequest.getUsername())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Username is already taken"
+            );
+        }
+        Staff staff = new Staff(
+                staffRegisterRequest.getUsername(),
+                passwordEncoder.encode(staffRegisterRequest.getPassword()),
+                StaffEnum.PENDING
+        );
+        staffRepository.save(staff);
+    }
 
+    @Override
+    public void approveRegistration(ApproveRegistrationRequest approveRegistrationRequest, Claims claims) {
+        Staff staff = findStaffByUsername(approveRegistrationRequest.getUsername());
+        StaffEnum setRole = approveRegistrationRequest.getRole();
+        String role = (String) claims.get("role");
+        if (staff == null || StaffEnum.fromString(role).hasLowerPriorityThan(staff.getRole())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You are not authorized to approve this staff"
+            );
+        }
+        staff.setRole(setRole);
+        staffRepository.save(staff);
+    }
+
+    @Override
+    public void declineRegistration(DeclineRegistrationRequest declineRegistrationRequest, Claims claims) {
+        Staff staff = findStaffByUsername(declineRegistrationRequest.getUsername());
+        String role = (String) claims.get("role");
+        if (staff == null || StaffEnum.fromString(role).hasLowerPriorityThan(staff.getRole())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You are not authorized to decline this staff"
+            );
+        }
+        staffRepository.delete(staff);
+    }
+
+    @Override
     public LoginDto changePassword(ChangePasswordRequest changePasswordRequest) {
         try {
             Staff staff = staffRepository.findByUsername(changePasswordRequest.username());
@@ -170,17 +230,4 @@ public class StaffServiceImpl implements StaffService {
         staffRepository.save(staff);
         log.info("Super operator created");
     }
-
-    @SneakyThrows
-    private static String Md5PasswordEncode(String password) {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(password.getBytes());
-        byte[] digest = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b & 0xff));
-        }
-        return sb.toString();
-    }
-
 }
