@@ -1,6 +1,7 @@
 package com.samoonpride.backend.serviceImpl;
 
 import com.samoonpride.backend.dto.request.CreateLineUserRequest;
+import com.samoonpride.backend.enums.ActivityLogAction;
 import com.samoonpride.backend.model.LineUser;
 import com.samoonpride.backend.repository.LineUserRepository;
 import com.samoonpride.backend.service.LineUserService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class LineUserServiceImpl implements LineUserService {
     private LineUserRepository lineUserRepository;
+    private ActivityLogServiceImpl activityLogService;
     private ModelMapper modelMapper;
 
     @Override
@@ -20,6 +22,17 @@ public class LineUserServiceImpl implements LineUserService {
         if (lineUserRepository.findByUserId(lineUser.getUserId()) != null) {
             return;
         }
+
+        String logMessage = String.format(
+                "Created %s",
+                lineUser.getDisplayName()
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.USER_CREATED,
+                logMessage
+        );
+
         lineUserRepository.save(lineUser);
     }
 

@@ -4,6 +4,7 @@ import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.dto.LoginDto;
 import com.samoonpride.backend.dto.StaffDto;
 import com.samoonpride.backend.dto.request.*;
+import com.samoonpride.backend.enums.ActivityLogAction;
 import com.samoonpride.backend.enums.StaffEnum;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
@@ -36,6 +37,7 @@ public class StaffServiceImpl implements StaffService {
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
+    private ActivityLogServiceImpl activityLogService;
 
     @SneakyThrows
     private static String Md5PasswordEncode(String password) {
@@ -82,13 +84,24 @@ public class StaffServiceImpl implements StaffService {
                     )
             );
             Staff staff = staffRepository.findByUsername(authentication.getName());
-            if (staff.getRole() == StaffEnum.PENDING) {
+            if (staff.isPending()) {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
                         "Your account is not approved yet"
                 );
             }
             String token = jwtUtil.createToken(staff);
+
+            String logMessage = String.format(
+                    "%s logged in to the system",
+                    staff.getUsername()
+            );
+
+            activityLogService.logAction(
+                    ActivityLogAction.STAFF_LOGIN,
+                    logMessage
+            );
+
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
         } catch (BadCredentialsException e) {
@@ -120,6 +133,17 @@ public class StaffServiceImpl implements StaffService {
                 passwordEncoder.encode(staffRegisterRequest.getPassword()),
                 StaffEnum.PENDING
         );
+
+        String logMessage = String.format(
+                "New staff %s registered",
+                staff.getUsername()
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_REGISTER,
+                logMessage
+        );
+
         staffRepository.save(staff);
     }
 
@@ -135,6 +159,19 @@ public class StaffServiceImpl implements StaffService {
             );
         }
         staff.setRole(setRole);
+
+        String logMessage = String.format(
+                "%s approved %s as %s",
+                claims.get("username"),
+                staff.getUsername(),
+                setRole
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_APPROVE,
+                logMessage
+        );
+
         staffRepository.save(staff);
     }
 
@@ -148,6 +185,18 @@ public class StaffServiceImpl implements StaffService {
                     "You are not authorized to decline this staff"
             );
         }
+
+        String logMessage = String.format(
+                "%s declined %s",
+                claims.get("username"),
+                staff.getUsername()
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_DECLINE,
+                logMessage
+        );
+
         staffRepository.delete(staff);
     }
 
@@ -175,6 +224,17 @@ public class StaffServiceImpl implements StaffService {
             );
 
             String token = jwtUtil.createToken(staff);
+
+            String logMessage = String.format(
+                    "%s changed password",
+                    staff.getUsername()
+            );
+
+            activityLogService.logAction(
+                    ActivityLogAction.STAFF_CHANGE_PASSWORD,
+                    logMessage
+            );
+
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
         } catch (BadCredentialsException e) {
@@ -213,6 +273,18 @@ public class StaffServiceImpl implements StaffService {
                     "You are not authorized to delete this staff"
             );
         }
+
+        String logMessage = String.format(
+                "%s deleted %s",
+                claims.get("username"),
+                staff.getUsername()
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_DELETED,
+                logMessage
+        );
+
         staffRepository.delete(staff);
     }
 

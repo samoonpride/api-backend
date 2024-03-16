@@ -12,6 +12,7 @@ import com.samoonpride.backend.dto.UserDto;
 import com.samoonpride.backend.dto.request.CreateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
+import com.samoonpride.backend.enums.ActivityLogAction;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.enums.UserEnum;
 import com.samoonpride.backend.model.Issue;
@@ -19,6 +20,7 @@ import com.samoonpride.backend.repository.IssueRepository;
 import com.samoonpride.backend.repository.StaffIssueAssignmentRepository;
 import com.samoonpride.backend.repository.SubscribeRepository;
 import com.samoonpride.backend.service.IssueService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -41,12 +43,26 @@ public class IssueServiceImpl implements IssueService {
     private final LineUserServiceImpl lineUserService;
     private final MediaServiceImpl multimediaService;
     private final StaffServiceImpl staffService;
+    private final ActivityLogServiceImpl activityLogService;
 
     @Override
     public void createIssue(CreateIssueRequest createIssueRequest) {
         log.info("Creating issue");
         Issue issue = buildIssueFromRequest(createIssueRequest);
         issueRepository.save(issue);
+
+        String logMessage = String.format(
+                "User %s created issue (%d) %s",
+                issue.getLineUser().getDisplayName(),
+                issue.getId(),
+                issue.getTitle()
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.USER_CREATE_ISSUE,
+                logMessage
+        );
+
         // It will set thumbnailPath in createMultimedia
         multimediaService.createMultimedia(issue, createIssueRequest.getMedia());
     }
@@ -90,11 +106,23 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void reopenIssue(int issueId) {
+    public void reopenIssue(int issueId, Claims claims) {
         Issue issue = issueRepository.findById(issueId);
         if (issue.getStatus() == IssueStatus.COMPLETED) {
             issue.setStatus(IssueStatus.IN_CONSIDERATION);
             issueRepository.save(issue);
+
+            String logMessage = String.format(
+                    "Staff %s reopened issue (%d) %s",
+                    claims.get("username"),
+                    issue.getId(),
+                    issue.getTitle()
+            );
+
+            activityLogService.logAction(
+                    ActivityLogAction.STAFF_REOPEN_ISSUE,
+                    logMessage
+            );
 
             // notify when issue status change
             notifyWhenIssueStatusChange(issue);
@@ -104,7 +132,7 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     @Transactional
-    public void updateIssue(int issueId, UpdateIssueRequest updateIssueRequest, MultipartFile media) {
+    public void updateIssue(int issueId, UpdateIssueRequest updateIssueRequest, MultipartFile media, Claims claims) {
         Issue issue = issueRepository.findById(issueId);
         issue.setTitle(updateIssueRequest.getTitle());
         if (updateIssueRequest.getDuplicateIssueId() != null) {
@@ -121,11 +149,35 @@ public class IssueServiceImpl implements IssueService {
         issue.setLongitude(updateIssueRequest.getLongitude());
         issueRepository.save(issue);
 
+        String logMessage = String.format(
+                "Staff %s updated issue (%d): \n%s \nto: \n%s",
+                claims.get("username"),
+                issue.getId(),
+                issue,
+                updateIssueRequest
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_UPDATE_ISSUE,
+                logMessage
+        );
+
         // It will set thumbnailPath in createMultimedia
         multimediaService.updateIssueMedia(issue, media);
     }
 
     private void notifyWhenIssueStatusChange(Issue issue) {
+        String logMessage = String.format(
+                "Notification issue (%d) %s",
+                issue.getId(),
+                issue.getTitle()
+        );
+
+        activityLogService.logAction(
+                ActivityLogAction.ISSUE_NOTIFICATION,
+                logMessage
+        );
+
         WebClientConfig.getWebClient()
                 .post()
                 .uri(LineConfig.getLineWebhookUrl() + "/notify/issue")

@@ -1,5 +1,6 @@
 package com.samoonpride.backend.controller;
 
+import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.config.ModelMapperConfig;
 import com.samoonpride.backend.dto.IssueBubbleDto;
 import com.samoonpride.backend.dto.IssueDto;
@@ -8,6 +9,8 @@ import com.samoonpride.backend.dto.request.UpdateIssueRequest;
 import com.samoonpride.backend.dto.request.UpdateIssueStatusRequest;
 import com.samoonpride.backend.enums.IssueStatus;
 import com.samoonpride.backend.serviceImpl.IssueServiceImpl;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequestMapping("/api/issue")
 public class IssueController {
     private final IssueServiceImpl issueService;
+    private final JwtUtil jwtUtil;
     private final ModelMapperConfig modelMapperConfig;
 
     @GetMapping("/get/all")
@@ -49,19 +53,22 @@ public class IssueController {
     // reopen issue
     @PatchMapping("/reopen/{issueId}")
     @ResponseStatus(HttpStatus.OK)
-    public void reopenIssue(@PathVariable int issueId) {
-        issueService.reopenIssue(issueId);
+    public void reopenIssue(HttpServletRequest request, @PathVariable int issueId) {
+        Claims claims = jwtUtil.resolveClaims(request);
+        issueService.reopenIssue(issueId, claims);
     }
 
     // update issue
     @PatchMapping("/{issueId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateIssue(@PathVariable int issueId,
+    public void updateIssue(HttpServletRequest request,
+                            @PathVariable int issueId,
                             @RequestParam("image") MultipartFile media,
                             @RequestParam("issue") JSONObject issueJson
     ) {
+        Claims claims = jwtUtil.resolveClaims(request);
         UpdateIssueRequest updateIssueRequest = modelMapperConfig.modelMapper().map(issueJson, UpdateIssueRequest.class);
-        issueService.updateIssue(issueId, updateIssueRequest, media);
+        issueService.updateIssue(issueId, updateIssueRequest, media, claims);
     }
 
     // get latest 10 issues

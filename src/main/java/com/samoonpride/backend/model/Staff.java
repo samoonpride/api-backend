@@ -50,4 +50,8 @@ public class Staff {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
+    // isPending
+    public boolean isPending() {
+        return this.role.equals(StaffEnum.PENDING);
+    }
 }

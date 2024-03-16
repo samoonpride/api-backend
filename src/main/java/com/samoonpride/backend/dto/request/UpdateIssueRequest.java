@@ -18,4 +18,17 @@ public class UpdateIssueRequest {
     private float latitude;
     private float longitude;
     private IssueStatus status;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + issueId +
+                ", title='" + title + '\'' +
+                ", duplicateIssueId=" + duplicateIssueId +
+                ", assigneeIds=" + assigneeIds +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", status=" + status +
+                '}';
+    }
 }
