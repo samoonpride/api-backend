@@ -4,10 +4,12 @@ import com.samoonpride.backend.authentication.JwtUtil;
 import com.samoonpride.backend.dto.LoginDto;
 import com.samoonpride.backend.dto.StaffDto;
 import com.samoonpride.backend.dto.request.*;
+import com.samoonpride.backend.enums.ActivityLogAction;
 import com.samoonpride.backend.enums.StaffEnum;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;
+import com.samoonpride.backend.utils.LogMessageFormatter;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -36,6 +38,7 @@ public class StaffServiceImpl implements StaffService {
     private JwtUtil jwtUtil;
     private PasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
+    private ActivityLogServiceImpl activityLogService;
 
     @SneakyThrows
     private static String Md5PasswordEncode(String password) {
@@ -82,13 +85,19 @@ public class StaffServiceImpl implements StaffService {
                     )
             );
             Staff staff = staffRepository.findByUsername(authentication.getName());
-            if (staff.getRole() == StaffEnum.PENDING) {
+            if (staff.isPending()) {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
                         "Your account is not approved yet"
                 );
             }
             String token = jwtUtil.createToken(staff);
+
+            activityLogService.logAction(
+                    ActivityLogAction.STAFF_LOGIN,
+                    LogMessageFormatter.formatStaffLogin(staff)
+            );
+
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
         } catch (BadCredentialsException e) {
@@ -120,6 +129,12 @@ public class StaffServiceImpl implements StaffService {
                 passwordEncoder.encode(staffRegisterRequest.getPassword()),
                 StaffEnum.PENDING
         );
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_REGISTER,
+                LogMessageFormatter.formatStaffRegister(staff)
+        );
+
         staffRepository.save(staff);
     }
 
@@ -135,6 +150,15 @@ public class StaffServiceImpl implements StaffService {
             );
         }
         staff.setRole(setRole);
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_APPROVAL,
+                LogMessageFormatter.formatStaffApproval(
+                        claims.get("username", String.class),
+                        staff
+                )
+        );
+
         staffRepository.save(staff);
     }
 
@@ -148,6 +172,15 @@ public class StaffServiceImpl implements StaffService {
                     "You are not authorized to decline this staff"
             );
         }
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_DECLINATION,
+                LogMessageFormatter.formatStaffDeclination(
+                        claims.get("username", String.class),
+                        staff
+                )
+        );
+
         staffRepository.delete(staff);
     }
 
@@ -175,6 +208,12 @@ public class StaffServiceImpl implements StaffService {
             );
 
             String token = jwtUtil.createToken(staff);
+
+            activityLogService.logAction(
+                    ActivityLogAction.STAFF_CHANGE_PASSWORD,
+                    LogMessageFormatter.formatStaffChangePassword(staff)
+            );
+
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
 
         } catch (BadCredentialsException e) {
@@ -213,6 +252,15 @@ public class StaffServiceImpl implements StaffService {
                     "You are not authorized to delete this staff"
             );
         }
+
+        activityLogService.logAction(
+                ActivityLogAction.STAFF_DELETED,
+                LogMessageFormatter.formatStaffDeleted(
+                        claims.get("username", String.class),
+                        staff
+                )
+        );
+
         staffRepository.delete(staff);
     }
 

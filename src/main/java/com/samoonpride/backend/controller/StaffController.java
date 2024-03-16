@@ -58,7 +58,7 @@ public class StaffController {
         log.info("claims: {}", claims);
         return staffService.createStaff(staff, claims);
     }
-    
+
     @PatchMapping("/password")
     @ResponseStatus(HttpStatus.OK)
     public LoginDto changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {

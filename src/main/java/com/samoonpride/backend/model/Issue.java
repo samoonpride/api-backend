@@ -62,4 +62,31 @@ public class Issue {
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+    @Override
+    public String toString() {
+        StringBuilder assigneeIdsString = new StringBuilder();
+        if (assignees != null && !assignees.isEmpty()) {
+            assigneeIdsString.append(assignees.stream()
+                    .map(StaffIssueAssignment::getStaff)
+                    .map(Staff::getId)
+                    .toList());
+        } else {
+            assigneeIdsString.append("[]");
+        }
+
+        String duplicateIssueIdString = (duplicateIssue != null) ? String.valueOf(duplicateIssue.getId()) : "null";
+
+        return String.format("{" +
+                        "id= %d," +
+                        " title='%s'," +
+                        " duplicateIssueId=%s," +
+                        " assigneeIds=%s," +
+                        " latitude=%f," +
+                        " longitude=%f," +
+                        " status=%s" +
+                        "}",
+                id, title, duplicateIssueIdString, assigneeIdsString, latitude, longitude, status
+        );
+    }
 }
