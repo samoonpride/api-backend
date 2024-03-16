@@ -89,19 +89,19 @@ public class LogMessageFormatter {
         );
     }
 
-    public static String formatUserSubscribeIssue(String lineUserId, Issue issue) {
+    public static String formatUserSubscribeIssue(LineUser lineUser, Issue issue) {
         return String.format(
-                "User %s subscribed issue (%d) %s",
-                lineUserId,
+                "User: %s subscribed issue (%d) %s",
+                lineUser.getDisplayName(),
                 issue.getId(),
                 issue.getTitle()
         );
     }
 
-    public static String formatUserUnsubscribeIssue(String lineUserId, Issue issue) {
+    public static String formatUserUnsubscribeIssue(LineUser lineUser, Issue issue) {
         return String.format(
-                "User %s unsubscribed issue (%d) %s",
-                lineUserId,
+                "User: %s unsubscribed issue (%d) %s",
+                lineUser.getDisplayName(),
                 issue.getId(),
                 issue.getTitle()
         );

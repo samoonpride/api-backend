@@ -8,13 +8,14 @@ import com.samoonpride.backend.repository.IssueRepository;
 import com.samoonpride.backend.repository.LineUserRepository;
 import com.samoonpride.backend.repository.SubscribeRepository;
 import com.samoonpride.backend.service.SubscribeService;
+import com.samoonpride.backend.utils.LogMessageFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class SubscribeServiceImpl implements SubscribeService{
+public class SubscribeServiceImpl implements SubscribeService {
     private final SubscribeRepository subscribeRepository;
     private final IssueRepository issueRepository;
     private final LineUserRepository lineUserRepository;
@@ -37,16 +38,12 @@ public class SubscribeServiceImpl implements SubscribeService{
             lineUser.getSubscribes().add(subscribe);
             issue.getSubscribes().add(subscribe);
 
-            String logMessage = String.format(
-                    "%s subscribed (%d) %s",
-                    lineUser.getDisplayName(),
-                    issue.getId(),
-                    issue.getTitle()
-            );
-
             activityLogService.logAction(
                     ActivityLogAction.USER_SUBSCRIBE_ISSUE,
-                    logMessage
+                    LogMessageFormatter.formatUserSubscribeIssue(
+                            lineUser,
+                            issue
+                    )
             );
 
             // Save to database
@@ -63,16 +60,12 @@ public class SubscribeServiceImpl implements SubscribeService{
             LineUser lineUser = lineUserRepository.findByUserId(lineUserId);
             Issue issue = issueRepository.findById(issueId);
 
-            String logMessage = String.format(
-                    "%s unsubscribed (%d) %s",
-                    lineUser.getDisplayName(),
-                    issue.getId(),
-                    issue.getTitle()
-            );
-
             activityLogService.logAction(
                     ActivityLogAction.USER_UNSUBSCRIBE_ISSUE,
-                    logMessage
+                    LogMessageFormatter.formatUserUnsubscribeIssue(
+                            lineUser,
+                            issue
+                    )
             );
 
             subscribeRepository.deleteByLineUser_UserIdAndIssueId(lineUserId, issueId);
