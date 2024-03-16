@@ -5,6 +5,7 @@ import com.samoonpride.backend.enums.ActivityLogAction;
 import com.samoonpride.backend.model.LineUser;
 import com.samoonpride.backend.repository.LineUserRepository;
 import com.samoonpride.backend.service.LineUserService;
+import com.samoonpride.backend.utils.LogMessageFormatter;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,9 @@ public class LineUserServiceImpl implements LineUserService {
             return;
         }
 
-        String logMessage = String.format(
-                "Created %s",
-                lineUser.getDisplayName()
-        );
-
         activityLogService.logAction(
                 ActivityLogAction.USER_CREATED,
-                logMessage
+                LogMessageFormatter.formatUserCreated(lineUser)
         );
 
         lineUserRepository.save(lineUser);

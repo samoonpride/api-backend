@@ -20,6 +20,7 @@ import com.samoonpride.backend.repository.IssueRepository;
 import com.samoonpride.backend.repository.StaffIssueAssignmentRepository;
 import com.samoonpride.backend.repository.SubscribeRepository;
 import com.samoonpride.backend.service.IssueService;
+import com.samoonpride.backend.utils.LogMessageFormatter;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -51,16 +52,12 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = buildIssueFromRequest(createIssueRequest);
         issueRepository.save(issue);
 
-        String logMessage = String.format(
-                "User %s created issue (%d) %s",
-                issue.getLineUser().getDisplayName(),
-                issue.getId(),
-                issue.getTitle()
-        );
-
         activityLogService.logAction(
                 ActivityLogAction.USER_CREATE_ISSUE,
-                logMessage
+                LogMessageFormatter.formatUserCreateIssue(
+                        createIssueRequest.getUser().getUserId(),
+                        issue
+                )
         );
 
         // It will set thumbnailPath in createMultimedia
@@ -112,16 +109,12 @@ public class IssueServiceImpl implements IssueService {
             issue.setStatus(IssueStatus.IN_CONSIDERATION);
             issueRepository.save(issue);
 
-            String logMessage = String.format(
-                    "Staff %s reopened issue (%d) %s",
-                    claims.get("username"),
-                    issue.getId(),
-                    issue.getTitle()
-            );
-
             activityLogService.logAction(
                     ActivityLogAction.STAFF_REOPEN_ISSUE,
-                    logMessage
+                    LogMessageFormatter.formatStaffReopenIssue(
+                            claims.get("username", String.class),
+                            issue
+                    )
             );
 
             // notify when issue status change
@@ -149,17 +142,13 @@ public class IssueServiceImpl implements IssueService {
         issue.setLongitude(updateIssueRequest.getLongitude());
         issueRepository.save(issue);
 
-        String logMessage = String.format(
-                "Staff %s updated issue (%d): \n%s \nto: \n%s",
-                claims.get("username"),
-                issue.getId(),
-                issue,
-                updateIssueRequest
-        );
-
         activityLogService.logAction(
                 ActivityLogAction.STAFF_UPDATE_ISSUE,
-                logMessage
+                LogMessageFormatter.formatStaffUpdateIssue(
+                        claims.get("username", String.class),
+                        issue,
+                        updateIssueRequest
+                )
         );
 
         // It will set thumbnailPath in createMultimedia
@@ -167,15 +156,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     private void notifyWhenIssueStatusChange(Issue issue) {
-        String logMessage = String.format(
-                "Notification issue (%d) %s",
-                issue.getId(),
-                issue.getTitle()
-        );
-
         activityLogService.logAction(
                 ActivityLogAction.ISSUE_NOTIFICATION,
-                logMessage
+                LogMessageFormatter.formatIssueNotification(
+                        issue
+                )
         );
 
         WebClientConfig.getWebClient()

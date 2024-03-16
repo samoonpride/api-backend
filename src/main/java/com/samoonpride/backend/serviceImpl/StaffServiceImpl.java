@@ -9,6 +9,7 @@ import com.samoonpride.backend.enums.StaffEnum;
 import com.samoonpride.backend.model.Staff;
 import com.samoonpride.backend.repository.StaffRepository;
 import com.samoonpride.backend.service.StaffService;
+import com.samoonpride.backend.utils.LogMessageFormatter;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -92,14 +93,9 @@ public class StaffServiceImpl implements StaffService {
             }
             String token = jwtUtil.createToken(staff);
 
-            String logMessage = String.format(
-                    "%s logged in to the system",
-                    staff.getUsername()
-            );
-
             activityLogService.logAction(
                     ActivityLogAction.STAFF_LOGIN,
-                    logMessage
+                    LogMessageFormatter.formatStaffLogin(staff)
             );
 
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
@@ -134,14 +130,9 @@ public class StaffServiceImpl implements StaffService {
                 StaffEnum.PENDING
         );
 
-        String logMessage = String.format(
-                "New staff %s registered",
-                staff.getUsername()
-        );
-
         activityLogService.logAction(
                 ActivityLogAction.STAFF_REGISTER,
-                logMessage
+                LogMessageFormatter.formatStaffRegister(staff)
         );
 
         staffRepository.save(staff);
@@ -160,16 +151,12 @@ public class StaffServiceImpl implements StaffService {
         }
         staff.setRole(setRole);
 
-        String logMessage = String.format(
-                "%s approved %s as %s",
-                claims.get("username"),
-                staff.getUsername(),
-                setRole
-        );
-
         activityLogService.logAction(
-                ActivityLogAction.STAFF_APPROVE,
-                logMessage
+                ActivityLogAction.STAFF_APPROVAL,
+                LogMessageFormatter.formatStaffApproval(
+                        claims.get("username", String.class),
+                        staff
+                )
         );
 
         staffRepository.save(staff);
@@ -186,15 +173,12 @@ public class StaffServiceImpl implements StaffService {
             );
         }
 
-        String logMessage = String.format(
-                "%s declined %s",
-                claims.get("username"),
-                staff.getUsername()
-        );
-
         activityLogService.logAction(
-                ActivityLogAction.STAFF_DECLINE,
-                logMessage
+                ActivityLogAction.STAFF_DECLINATION,
+                LogMessageFormatter.formatStaffDeclination(
+                        claims.get("username", String.class),
+                        staff
+                )
         );
 
         staffRepository.delete(staff);
@@ -225,14 +209,9 @@ public class StaffServiceImpl implements StaffService {
 
             String token = jwtUtil.createToken(staff);
 
-            String logMessage = String.format(
-                    "%s changed password",
-                    staff.getUsername()
-            );
-
             activityLogService.logAction(
                     ActivityLogAction.STAFF_CHANGE_PASSWORD,
-                    logMessage
+                    LogMessageFormatter.formatStaffChangePassword(staff)
             );
 
             return new LoginDto(staff.getUsername(), staff.getRole(), token);
@@ -274,15 +253,12 @@ public class StaffServiceImpl implements StaffService {
             );
         }
 
-        String logMessage = String.format(
-                "%s deleted %s",
-                claims.get("username"),
-                staff.getUsername()
-        );
-
         activityLogService.logAction(
                 ActivityLogAction.STAFF_DELETED,
-                logMessage
+                LogMessageFormatter.formatStaffDeleted(
+                        claims.get("username", String.class),
+                        staff
+                )
         );
 
         staffRepository.delete(staff);
