@@ -63,7 +63,7 @@ public class IssueController {
     @ResponseStatus(HttpStatus.OK)
     public void updateIssue(HttpServletRequest request,
                             @PathVariable int issueId,
-                            @RequestParam("image") MultipartFile media,
+                            @RequestParam(value = "image", required = false) MultipartFile media,
                             @RequestParam("issue") JSONObject issueJson
     ) {
         Claims claims = jwtUtil.resolveClaims(request);

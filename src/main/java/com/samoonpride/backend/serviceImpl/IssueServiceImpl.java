@@ -155,7 +155,9 @@ public class IssueServiceImpl implements IssueService {
         );
 
         // It will set thumbnailPath in createMultimedia
-        multimediaService.updateIssueMedia(issue, media);
+        if (media != null) {
+            multimediaService.updateIssueMedia(issue, media);
+        }
     }
 
     private void notifyWhenIssueStatusChange(Issue issue) {

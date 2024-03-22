@@ -26,7 +26,9 @@ public class ActivityLog {
     @NonNull
     private String username;
 
+    @Lob
     @NonNull
+    @Column(columnDefinition = "TEXT")
     private String message;
 
     @CreatedDate

@@ -66,7 +66,7 @@ public class MediaServiceImpl implements MediaService {
 
         // Set thumbnail
         Path mediaPath = Path.of("public").resolve(image.getPath());
-        issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile(), MediaEnum.IMAGE));
+        issue.setThumbnailPath(ThumbnailUtils.createThumbnail(mediaPath.toFile()));
         // Save image
         mediaRepository.save(image);
     }

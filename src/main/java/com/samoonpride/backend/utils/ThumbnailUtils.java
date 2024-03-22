@@ -48,4 +48,29 @@ public class ThumbnailUtils {
         Path path = thumbnailFile.toPath().subpath(1, thumbnailFile.toPath().getNameCount());
         return path.toString();
     }
+
+    @SneakyThrows
+    public String createThumbnail(File file) {
+        log.info("Creating thumbnail for file: " + file.getName());
+        File thumbnailFile = new File("public/thumbnail/" + "thumbnail_" + file.getName());
+        try {
+            if (!thumbnailFile.exists()) {
+                // create directory if not exists
+                if (!thumbnailFile.getParentFile().exists()) {
+                    thumbnailFile.getParentFile().mkdirs();
+                }
+                Thumbnails.of(file)
+                        .size(ImageConfig.getThumbnailWidth(), ImageConfig.getThumbnailHeight())
+                        .keepAspectRatio(true)
+                        .toFile(thumbnailFile);
+            }
+        } catch (IOException e) {
+            log.error("Error creating thumbnail: " + e.getMessage());
+        }
+        log.info("Thumbnail created: " + thumbnailFile.getName());
+
+        // remove public from the path
+        Path path = thumbnailFile.toPath().subpath(1, thumbnailFile.toPath().getNameCount());
+        return path.toString();
+    }
 }
