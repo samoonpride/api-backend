@@ -95,6 +95,7 @@ public class StaffServiceImpl implements StaffService {
 
             activityLogService.logAction(
                     ActivityLogAction.STAFF_LOGIN,
+                    staff.getUsername(),
                     LogMessageFormatter.formatStaffLogin(staff)
             );
 
@@ -132,6 +133,7 @@ public class StaffServiceImpl implements StaffService {
 
         activityLogService.logAction(
                 ActivityLogAction.STAFF_REGISTER,
+                staff.getUsername(),
                 LogMessageFormatter.formatStaffRegister(staff)
         );
 
@@ -153,6 +155,7 @@ public class StaffServiceImpl implements StaffService {
 
         activityLogService.logAction(
                 ActivityLogAction.STAFF_APPROVAL,
+                claims.get("username", String.class),
                 LogMessageFormatter.formatStaffApproval(
                         claims.get("username", String.class),
                         staff
@@ -175,6 +178,7 @@ public class StaffServiceImpl implements StaffService {
 
         activityLogService.logAction(
                 ActivityLogAction.STAFF_DECLINATION,
+                claims.get("username", String.class),
                 LogMessageFormatter.formatStaffDeclination(
                         claims.get("username", String.class),
                         staff
@@ -211,6 +215,7 @@ public class StaffServiceImpl implements StaffService {
 
             activityLogService.logAction(
                     ActivityLogAction.STAFF_CHANGE_PASSWORD,
+                    staff.getUsername(),
                     LogMessageFormatter.formatStaffChangePassword(staff)
             );
 
@@ -255,6 +260,7 @@ public class StaffServiceImpl implements StaffService {
 
         activityLogService.logAction(
                 ActivityLogAction.STAFF_DELETED,
+                claims.get("username", String.class),
                 LogMessageFormatter.formatStaffDeleted(
                         claims.get("username", String.class),
                         staff

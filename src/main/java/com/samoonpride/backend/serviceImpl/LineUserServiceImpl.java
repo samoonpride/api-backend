@@ -26,6 +26,7 @@ public class LineUserServiceImpl implements LineUserService {
 
         activityLogService.logAction(
                 ActivityLogAction.USER_CREATED,
+                "SYSTEM",
                 LogMessageFormatter.formatUserCreated(lineUser)
         );
 

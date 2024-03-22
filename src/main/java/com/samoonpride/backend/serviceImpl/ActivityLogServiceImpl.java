@@ -13,8 +13,8 @@ public class ActivityLogServiceImpl implements ActivityLogService {
     private final ActivityLogRepository activityLogRepository;
 
     @Override
-    public void logAction(ActivityLogAction activityLogAction, String message) {
-        activityLogRepository.save(new ActivityLog(activityLogAction.getAction(), message));
+    public void logAction(ActivityLogAction activityLogAction, String username, String message) {
+        activityLogRepository.save(new ActivityLog(activityLogAction.getAction(), username, message));
     }
 
 }

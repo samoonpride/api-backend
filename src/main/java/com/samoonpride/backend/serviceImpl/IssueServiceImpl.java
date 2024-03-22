@@ -54,6 +54,7 @@ public class IssueServiceImpl implements IssueService {
 
         activityLogService.logAction(
                 ActivityLogAction.USER_CREATE_ISSUE,
+                issue.getLineUser().getDisplayName() + " (Line User)",
                 LogMessageFormatter.formatUserCreateIssue(
                         createIssueRequest.getUser().getUserId(),
                         issue
@@ -111,6 +112,7 @@ public class IssueServiceImpl implements IssueService {
 
             activityLogService.logAction(
                     ActivityLogAction.STAFF_REOPEN_ISSUE,
+                    claims.get("username", String.class),
                     LogMessageFormatter.formatStaffReopenIssue(
                             claims.get("username", String.class),
                             issue
@@ -144,6 +146,7 @@ public class IssueServiceImpl implements IssueService {
 
         activityLogService.logAction(
                 ActivityLogAction.STAFF_UPDATE_ISSUE,
+                claims.get("username", String.class),
                 LogMessageFormatter.formatStaffUpdateIssue(
                         claims.get("username", String.class),
                         issue,
@@ -158,6 +161,7 @@ public class IssueServiceImpl implements IssueService {
     private void notifyWhenIssueStatusChange(Issue issue) {
         activityLogService.logAction(
                 ActivityLogAction.ISSUE_NOTIFICATION,
+                "SYSTEM",
                 LogMessageFormatter.formatIssueNotification(
                         issue
                 )

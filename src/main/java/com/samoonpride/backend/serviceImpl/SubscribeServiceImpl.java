@@ -40,6 +40,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
             activityLogService.logAction(
                     ActivityLogAction.USER_SUBSCRIBE_ISSUE,
+                    lineUser.getDisplayName() + " (Line User)",
                     LogMessageFormatter.formatUserSubscribeIssue(
                             lineUser,
                             issue
@@ -62,6 +63,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
             activityLogService.logAction(
                     ActivityLogAction.USER_UNSUBSCRIBE_ISSUE,
+                    lineUser.getDisplayName() + " (Line User)",
                     LogMessageFormatter.formatUserUnsubscribeIssue(
                             lineUser,
                             issue

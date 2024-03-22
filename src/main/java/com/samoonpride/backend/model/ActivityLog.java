@@ -21,6 +21,9 @@ public class ActivityLog {
     private int id;
 
     @NonNull
+    private String username;
+
+    @NonNull
     private String action;
 
     @NonNull
