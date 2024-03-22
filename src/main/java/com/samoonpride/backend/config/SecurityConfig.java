@@ -71,6 +71,8 @@ public class SecurityConfig {
                                     .requestMatchers("/api/issue/line-user/get/**").permitAll()
                                     .requestMatchers("/api/issue/get/**").permitAll()
                                     .requestMatchers("/api/issue/create").permitAll()
+                                    // Log Controller
+                                    .requestMatchers("/api/log/all").permitAll()
                                     // Public Media
                                     .requestMatchers("/thumbnail/**").permitAll()
                                     .requestMatchers("/images/**").permitAll()

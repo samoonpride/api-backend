@@ -21,10 +21,10 @@ public class ActivityLog {
     private int id;
 
     @NonNull
-    private String username;
+    private String action;
 
     @NonNull
-    private String action;
+    private String username;
 
     @NonNull
     private String message;
